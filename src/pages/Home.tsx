@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,7 @@ import { useProgress } from "../contexts/ProgressContext";
 import { useCompetence } from "../contexts/CompetenceContext";
 import { ProgressBar } from "../components/ui/ProgressBar";
 import { Badge as UIBadge } from "@/components/ui/badge";  // Import shadcn Badge with alias
-import { Badge } from "../components/ui/Badge";  // Import the custom Badge component with relative path
+import { Badge as CustomBadge } from "../components/ui/CustomBadge";  // Import the renamed custom Badge component
 import { seances } from "../data/seances";
 
 const HomePage: React.FC = () => {
@@ -138,7 +137,7 @@ const HomePage: React.FC = () => {
             <CardContent>
               <div className="space-y-3">
                 {badges.slice(0, 3).map((badge) => (
-                  <Badge key={badge.id} badge={badge} />
+                  <CustomBadge key={badge.id} badge={badge} />
                 ))}
                 
                 {badges.filter(b => b.unlocked).length === 0 && (
