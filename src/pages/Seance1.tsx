@@ -11,6 +11,9 @@ import { useVoicePreferences } from '@/contexts/VoicePreferencesContext';
 import Screen1_1 from './seance1/Screen1_1';
 import Screen1_2 from './seance1/Screen1_2';
 import Screen1_3 from './seance1/Screen1_3';
+import Screen1_5 from './seance1/Screen1_5';
+import Screen1_6 from './seance1/Screen1_6';
+import Screen1_7 from './seance1/Screen1_7';
 
 // Types pour le suivi de progression
 type ProgressionState = {
@@ -24,9 +27,9 @@ const Seance1: React.FC = () => {
   // État pour suivre la progression
   const [progression, setProgression] = useState<ProgressionState>({
     currentScreen: 1,
-    totalScreens: 3, // Pour l'instant, nous implémentons 3 écrans
+    totalScreens: 6, // Nous avons maintenant 6 écrans
     completed: false,
-    screenCompletion: Array(3).fill(false),
+    screenCompletion: Array(6).fill(false),
   });
 
   const navigate = useNavigate();
@@ -96,6 +99,24 @@ const Seance1: React.FC = () => {
         />;
       case 3:
         return <Screen1_3 
+          onComplete={completeCurrentScreen} 
+          onNext={nextScreen} 
+          onPrevious={previousScreen} 
+        />;
+      case 4:
+        return <Screen1_5 
+          onComplete={completeCurrentScreen} 
+          onNext={nextScreen} 
+          onPrevious={previousScreen} 
+        />;
+      case 5:
+        return <Screen1_6 
+          onComplete={completeCurrentScreen} 
+          onNext={nextScreen} 
+          onPrevious={previousScreen} 
+        />;
+      case 6:
+        return <Screen1_7 
           onComplete={completeCurrentScreen} 
           onNext={() => navigate('/seance/1')} 
           onPrevious={previousScreen} 
