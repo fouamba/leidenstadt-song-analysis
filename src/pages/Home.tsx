@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,8 @@ import { YouTubePlayer } from "../components/multimedia/YouTubePlayer";
 import { useProgress } from "../contexts/ProgressContext";
 import { useCompetence } from "../contexts/CompetenceContext";
 import { ProgressBar } from "../components/ui/ProgressBar";
-import { Badge } from "../components/ui/badge";  // Changed from "Badge" to "badge" to match the import in NavigationBar
+import { Badge as UIBadge } from "@/components/ui/badge";  // Import shadcn Badge as UIBadge
+import { Badge } from "../components/ui/Badge";  // Import the custom Badge component for badge objects
 import { seances } from "../data/seances";
 
 const HomePage: React.FC = () => {

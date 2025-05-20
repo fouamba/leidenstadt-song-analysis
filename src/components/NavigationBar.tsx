@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -12,7 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { seances } from "@/data/seances";
 import { Book, FileText, Home, Info } from "lucide-react";
-import { Badge } from "@/components/ui/badge";  // Fixed import to use lowercase "badge"
+import { Badge as UIBadge } from "@/components/ui/badge";  // Import shadcn Badge as UIBadge
 import { useProgress } from "@/contexts/ProgressContext";
 
 export function NavigationBar() {
@@ -51,9 +50,9 @@ export function NavigationBar() {
                           <div>{seance.objectives.skill}</div>
                           {progress > 0 && (
                             <div className="flex items-center mt-1">
-                              <Badge variant="secondary" className="text-xs">
+                              <UIBadge variant="secondary" className="text-xs">
                                 {progress}% complété
-                              </Badge>
+                              </UIBadge>
                             </div>
                           )}
                         </div>
