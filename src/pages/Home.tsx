@@ -1,7 +1,8 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BadgeCheck, FileText, BookOpen, Play, Info, Calendar } from "lucide-react";
+import { BadgeCheck, FileText, BookOpen, Play, Info, Calendar, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import { YouTubePlayer } from "../components/multimedia/YouTubePlayer";
 import { useProgress } from "../contexts/ProgressContext";
@@ -10,18 +11,32 @@ import { ProgressBar } from "../components/ui/ProgressBar";
 import { Badge as UIBadge } from "@/components/ui/badge";  // Import shadcn Badge with alias
 import { Badge as CustomBadge } from "../components/ui/CustomBadge";  // Import the renamed custom Badge component
 import { seances } from "../data/seances";
+import { VoiceSettings } from "../components/settings/VoiceSettings";
+import { VoiceInstruction } from "../components/audio/VoiceInstruction";
+import { useVoicePreferences } from "../contexts/VoicePreferencesContext";
 
 const HomePage: React.FC = () => {
   const { getSeanceProgress } = useProgress();
   const { badges, competences } = useCompetence();
   const [showVideo, setShowVideo] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const { voiceEnabled } = useVoicePreferences();
+
+  const welcomeText = `Bienvenue dans l'environnement d'apprentissage interactif "Né en 17 à Leidenstadt". 
+    Cette application vous guidera à travers l'analyse de cette chanson de Jean-Jacques Goldman 
+    pour développer vos compétences en analyse de texte et en compréhension historique.`;
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 flex items-center justify-center">
             "Né en 17 à Leidenstadt"
+            {voiceEnabled && (
+              <div className="ml-2">
+                <VoiceInstruction text={welcomeText} visuallyHidden={true} />
+              </div>
+            )}
           </h1>
           <p className="text-lg text-slate-600 mb-6">
             Environnement d'Apprentissage Interactif
@@ -45,7 +60,21 @@ const HomePage: React.FC = () => {
                 Paroles complètes
               </Button>
             </Link>
+            <Button 
+              variant="outline" 
+              className="w-full md:w-auto"
+              onClick={() => setShowSettings(!showSettings)}
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              Paramètres vocaux
+            </Button>
           </div>
+          
+          {showSettings && (
+            <div className="mt-6">
+              <VoiceSettings />
+            </div>
+          )}
         </div>
 
         <Card className="mb-8">

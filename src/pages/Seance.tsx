@@ -3,11 +3,14 @@ import { useParams, Link } from "react-router-dom";
 import { NavigationBar } from "@/components/NavigationBar";
 import { seances } from "@/lib/data";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
+import { VoiceInstruction } from "@/components/audio/VoiceInstruction";
+import { useVoicePreferences } from "@/contexts/VoicePreferencesContext";
 
 const Seance = () => {
   const { id } = useParams<{ id: string }>();
   const seanceId = parseInt(id || "1");
   const seance = seances.find(s => s.id === seanceId);
+  const { voiceEnabled } = useVoicePreferences();
 
   // Navigation vers la séance précédente/suivante
   const prevSeance = seances.find(s => s.id === seanceId - 1);
@@ -27,6 +30,10 @@ const Seance = () => {
       </div>
     );
   }
+
+  const introductionText = `Bienvenue à la séance ${seance.id}: ${seance.title}. 
+    Cette séance dure ${seance.duration} et vise à ${seance.objectives.skill}. 
+    Explorez les différentes phases et suivez les instructions pour progresser dans votre apprentissage.`;
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -62,8 +69,13 @@ const Seance = () => {
               </div>
             </div>
             
-            <h1 className="text-3xl font-bold">
+            <h1 className="text-3xl font-bold flex items-center">
               Séance {seance.id}: {seance.title}
+              {voiceEnabled && (
+                <div className="ml-2">
+                  <VoiceInstruction text={introductionText} visuallyHidden={true} />
+                </div>
+              )}
             </h1>
           </header>
           
@@ -87,8 +99,16 @@ const Seance = () => {
             <div className="space-y-8">
               {seance.phases.map((phase) => (
                 <div key={phase.id} className="border-l-4 border-blue-500 pl-4 py-1">
-                  <h3 className="text-lg font-medium mb-2">
+                  <h3 className="text-lg font-medium mb-2 flex items-center">
                     Phase {phase.id}: {phase.title} ({phase.duration})
+                    {voiceEnabled && (
+                      <div className="ml-2">
+                        <VoiceInstruction 
+                          text={`Phase ${phase.id}: ${phase.title}. ${phase.content.join('. ')}`} 
+                          visuallyHidden={true} 
+                        />
+                      </div>
+                    )}
                   </h3>
                   <ul className="space-y-2 pl-5 list-disc">
                     {phase.content.map((item, index) => (
