@@ -1,6 +1,5 @@
-
 import { useEffect, useState } from 'react';
-import SpeechService from '../services/SpeechService';
+import SpeechService from '../services/speechService';
 
 interface UseSpeechOptions {
   autoInit?: boolean;

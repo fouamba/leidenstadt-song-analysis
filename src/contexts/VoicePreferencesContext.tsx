@@ -1,6 +1,5 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import SpeechService from '../services/SpeechService';
+import SpeechService from '../services/speechService';
 
 interface VoicePreferencesContextType {
   voiceEnabled: boolean;
