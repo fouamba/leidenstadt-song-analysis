@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useSpeech } from '../../hooks/useSpeech';
 import { Button } from "@/components/ui/button";
-import { Volume, VolumeX, Play, Pause, Stop } from "lucide-react";
+import { Volume, VolumeX, Play, Pause, Square } from "lucide-react";
 
 interface VoiceInstructionProps {
   text: string;
@@ -109,7 +109,7 @@ export const VoiceInstruction: React.FC<VoiceInstructionProps> = ({
               variant="outline"
               size="sm"
             >
-              <Stop className="h-4 w-4" />
+              <Square className="h-4 w-4" />
             </Button>
           )}
         </div>
