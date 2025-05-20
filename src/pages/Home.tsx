@@ -8,7 +8,7 @@ import { YouTubePlayer } from "../components/multimedia/YouTubePlayer";
 import { useProgress } from "../contexts/ProgressContext";
 import { useCompetence } from "../contexts/CompetenceContext";
 import { ProgressBar } from "../components/ui/ProgressBar";
-import { Badge } from "../components/ui/Badge";  // Keep the same casing as the file
+import { Badge } from "../components/ui/badge";  // Changed from "Badge" to "badge" to match the import in NavigationBar
 import { seances } from "../data/seances";
 
 const HomePage: React.FC = () => {
