@@ -12,6 +12,7 @@ import { VoicePreferencesProvider } from "./contexts/VoicePreferencesContext";
 import HomePage from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Seance from "./pages/Seance";
+import Seance1 from "./pages/Seance1";
 import HistoricalContext from "./pages/HistoricalContext";
 import Lyrics from "./pages/Lyrics";
 
@@ -29,6 +30,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/seance/:id" element={<Seance />} />
+                <Route path="/seance1" element={<Seance1 />} />
                 <Route path="/contexte-historique" element={<HistoricalContext />} />
                 <Route path="/paroles" element={<Lyrics />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
