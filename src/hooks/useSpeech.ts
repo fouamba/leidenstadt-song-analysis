@@ -1,5 +1,6 @@
+
 import { useEffect, useState } from 'react';
-import SpeechService from '../services/speechService';
+import SpeechService from '../services/SpeechService';
 
 interface UseSpeechOptions {
   autoInit?: boolean;
@@ -7,7 +8,7 @@ interface UseSpeechOptions {
 }
 
 export function useSpeech(options: UseSpeechOptions = {}) {
-  const speechService = SpeechService.getInstance();
+  const [speechService] = useState(() => new SpeechService());
   const [isInitialized, setIsInitialized] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -22,7 +23,7 @@ export function useSpeech(options: UseSpeechOptions = {}) {
       // Nettoyage
       speechService.cancel();
     };
-  }, [options.autoInit]);
+  }, [options.autoInit, speechService]);
   
   const init = () => {
     const voices = speechService.getVoices();

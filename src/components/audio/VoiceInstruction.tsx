@@ -27,7 +27,8 @@ export const VoiceInstruction: React.FC<VoiceInstructionProps> = ({
   visuallyHidden = false,
   children
 }) => {
-  const { speak, isSpeaking, isPaused, availableVoices, stop, pause, resume } = useSpeech({ autoInit: true });
+  const speech = useSpeech({ autoInit: true });
+  const { speak, stop, pause, resume, isSpeaking, isPaused, availableVoices } = speech;
   
   useEffect(() => {
     if (autoPlay && text) {

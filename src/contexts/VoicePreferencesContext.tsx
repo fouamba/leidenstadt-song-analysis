@@ -1,5 +1,6 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import SpeechService from '../services/speechService';
+import SpeechService from '../services/SpeechService';
 
 interface VoicePreferencesContextType {
   voiceEnabled: boolean;
@@ -50,10 +51,10 @@ export const VoicePreferencesProvider: React.FC<{children: React.ReactNode}> = (
     parseFloat(localStorage.getItem('voiceVolume') || '1.0')
   );
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [speechService] = useState(() => new SpeechService());
   
   // Initialiser le service
   useEffect(() => {
-    const speechService = SpeechService.getInstance();
     setAvailableVoices(speechService.getVoices());
     
     // Vérifier si la voix sélectionnée existe encore
@@ -75,7 +76,7 @@ export const VoicePreferencesProvider: React.FC<{children: React.ReactNode}> = (
         setAvailableVoices(speechService.getVoices());
       };
     }
-  }, []);
+  }, [speechService, selectedVoice, rate, pitch, volume]);
   
   // Persister les préférences
   useEffect(() => {
@@ -90,18 +91,18 @@ export const VoicePreferencesProvider: React.FC<{children: React.ReactNode}> = (
   
   useEffect(() => {
     localStorage.setItem('voiceRate', rate.toString());
-    SpeechService.getInstance().setRate(rate);
-  }, [rate]);
+    speechService.setRate(rate);
+  }, [rate, speechService]);
   
   useEffect(() => {
     localStorage.setItem('voicePitch', pitch.toString());
-    SpeechService.getInstance().setPitch(pitch);
-  }, [pitch]);
+    speechService.setPitch(pitch);
+  }, [pitch, speechService]);
   
   useEffect(() => {
     localStorage.setItem('voiceVolume', volume.toString());
-    SpeechService.getInstance().setVolume(volume);
-  }, [volume]);
+    speechService.setVolume(volume);
+  }, [volume, speechService]);
   
   return (
     <VoicePreferencesContext.Provider

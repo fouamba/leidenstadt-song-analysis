@@ -1,6 +1,5 @@
 
 class SpeechService {
-  private static instance: SpeechService;
   private synthesis: SpeechSynthesis;
   private voices: SpeechSynthesisVoice[] = [];
   private defaultVoice: SpeechSynthesisVoice | null = null;
@@ -9,20 +8,13 @@ class SpeechService {
   private rate: number = 1.0;
   private pitch: number = 1.0;
   
-  private constructor() {
+  constructor() {
     this.synthesis = window.speechSynthesis;
     this.loadVoices();
     // Recharger les voix si elles sont chargées de manière asynchrone
     if (speechSynthesis.onvoiceschanged !== undefined) {
       speechSynthesis.onvoiceschanged = this.loadVoices.bind(this);
     }
-  }
-  
-  public static getInstance(): SpeechService {
-    if (!SpeechService.instance) {
-      SpeechService.instance = new SpeechService();
-    }
-    return SpeechService.instance;
   }
   
   private loadVoices(): void {
