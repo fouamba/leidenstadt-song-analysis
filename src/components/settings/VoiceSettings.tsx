@@ -66,12 +66,12 @@ export const VoiceSettings: React.FC = () => {
           <>
             <div className="space-y-1">
               <Label htmlFor="voice-select">Choisir une voix:</Label>
-              <Select value={selectedVoice || ''} onValueChange={setSelectedVoice}>
+              <Select value={selectedVoice || 'default'} onValueChange={setSelectedVoice}>
                 <SelectTrigger id="voice-select">
                   <SelectValue placeholder="Voix par défaut" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Voix par défaut</SelectItem>
+                  <SelectItem value="default">Voix par défaut</SelectItem>
                   {frenchVoices.map(voice => (
                     <SelectItem key={voice.name} value={voice.name}>
                       {voice.name} ({voice.lang})
