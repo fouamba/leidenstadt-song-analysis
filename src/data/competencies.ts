@@ -1,5 +1,5 @@
 
-import { Competence } from "../models/types";
+import { Competence, Badge } from "../models/types";
 
 export const competencies: Competence[] = [
   {
@@ -39,14 +39,14 @@ export const competencies: Competence[] = [
   },
 ];
 
-export const badges = [
+export const badges: Badge[] = [
   {
     id: "badge-1",
     name: "Découvreur",
     description: "A terminé la première séance d'exploration de l'œuvre",
     imageUrl: "/badges/badge-decouverte.svg",
     requiredCompetences: [
-      { id: "comp-4", minLevel: "en-cours" },
+      { id: "comp-4", minLevel: "en-cours" as const },
     ],
     unlocked: false,
     progress: 0,
@@ -57,7 +57,7 @@ export const badges = [
     description: "Maîtrise l'emploi et les valeurs des temps du passé",
     imageUrl: "/badges/badge-passe.svg",
     requiredCompetences: [
-      { id: "comp-1", minLevel: "acquis" },
+      { id: "comp-1", minLevel: "acquis" as const },
     ],
     unlocked: false,
     progress: 0,
@@ -68,7 +68,7 @@ export const badges = [
     description: "Expert dans l'analyse et l'utilisation du mode conditionnel",
     imageUrl: "/badges/badge-conditionnel.svg",
     requiredCompetences: [
-      { id: "comp-2", minLevel: "acquis" },
+      { id: "comp-2", minLevel: "acquis" as const },
     ],
     unlocked: false,
     progress: 0,
@@ -79,11 +79,11 @@ export const badges = [
     description: "A complété l'intégralité de la séquence d'apprentissage",
     imageUrl: "/badges/badge-analyste.svg",
     requiredCompetences: [
-      { id: "comp-1", minLevel: "acquis" },
-      { id: "comp-2", minLevel: "acquis" },
-      { id: "comp-3", minLevel: "acquis" },
-      { id: "comp-4", minLevel: "acquis" },
-      { id: "comp-5", minLevel: "acquis" },
+      { id: "comp-1", minLevel: "acquis" as const },
+      { id: "comp-2", minLevel: "acquis" as const },
+      { id: "comp-3", minLevel: "acquis" as const },
+      { id: "comp-4", minLevel: "acquis" as const },
+      { id: "comp-5", minLevel: "acquis" as const },
     ],
     unlocked: false,
     progress: 0,
