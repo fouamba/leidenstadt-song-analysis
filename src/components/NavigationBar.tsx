@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { seances } from "@/data/seances";
 import { Book, FileText, Home, Info } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/Badge";  // Changed from lowercase "badge" to "Badge"
 import { useProgress } from "@/contexts/ProgressContext";
 
 export function NavigationBar() {
