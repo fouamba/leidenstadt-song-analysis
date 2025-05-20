@@ -9,7 +9,7 @@ import { useProgress } from "../contexts/ProgressContext";
 import { useCompetence } from "../contexts/CompetenceContext";
 import { ProgressBar } from "../components/ui/ProgressBar";
 import { Badge as UIBadge } from "@/components/ui/badge";  // Import shadcn Badge with alias
-import { Badge } from "@/components/ui/Badge";  // Import the custom Badge component with its original name
+import { Badge } from "../components/ui/Badge";  // Import the custom Badge component with relative path
 import { seances } from "../data/seances";
 
 const HomePage: React.FC = () => {

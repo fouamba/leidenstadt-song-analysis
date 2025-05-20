@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -11,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { seances } from "@/data/seances";
 import { Book, FileText, Home, Info } from "lucide-react";
-import { Badge as UIBadge } from "@/components/ui/badge";  // Import shadcn Badge as UIBadge
+import { Badge as UIBadge } from "@/components/ui/badge";  // Import shadcn Badge with the same alias as in Home.tsx
 import { useProgress } from "@/contexts/ProgressContext";
 
 export function NavigationBar() {
