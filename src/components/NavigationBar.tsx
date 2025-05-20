@@ -10,10 +10,14 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { seances } from "@/lib/data";
-import { Book, Home } from "lucide-react";
+import { seances } from "@/data/seances";
+import { Book, FileText, Home, Info } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useProgress } from "@/contexts/ProgressContext";
 
 export function NavigationBar() {
+  const { getSeanceProgress } = useProgress();
+  
   return (
     <nav className="bg-slate-100 py-4 border-b border-slate-200 sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -34,15 +38,28 @@ export function NavigationBar() {
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                  {seances.map((seance) => (
-                    <ListItem
-                      key={seance.id}
-                      title={`Séance ${seance.id}: ${seance.title}`}
-                      href={`/seance/${seance.id}`}
-                    >
-                      {seance.objectives.skill}
-                    </ListItem>
-                  ))}
+                  {seances.map((seance) => {
+                    const progress = getSeanceProgress(seance.id);
+                    
+                    return (
+                      <ListItem
+                        key={seance.id}
+                        title={`Séance ${seance.id}: ${seance.title}`}
+                        href={`/seance/${seance.id}`}
+                      >
+                        <div className="flex flex-col space-y-1">
+                          <div>{seance.objectives.skill}</div>
+                          {progress > 0 && (
+                            <div className="flex items-center mt-1">
+                              <Badge variant="secondary" className="text-xs">
+                                {progress}% complété
+                              </Badge>
+                            </div>
+                          )}
+                        </div>
+                      </ListItem>
+                    );
+                  })}
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -51,7 +68,8 @@ export function NavigationBar() {
                 to="/contexte-historique" 
                 className="flex items-center space-x-2 font-medium text-slate-700 hover:text-slate-900"
               >
-                Contexte historique
+                <Info className="h-5 w-5" />
+                <span>Contexte historique</span>
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
@@ -59,7 +77,8 @@ export function NavigationBar() {
                 to="/paroles" 
                 className="flex items-center space-x-2 font-medium text-slate-700 hover:text-slate-900"
               >
-                Paroles
+                <FileText className="h-5 w-5" />
+                <span>Paroles</span>
               </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
