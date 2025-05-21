@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -5,8 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { AlertCircle, Play, Pause, SkipBack, SkipForward, CheckCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useSpeechSynthesis } from '../../hooks/useSpeechSynthesis';
+import { cn } from '@/lib/utils';
 
-export default function Screen1_4() {
+// Define the component props
+interface Screen1_4Props {
+  onComplete: () => void;
+  onNext: () => void;
+  onPrevious: () => void;
+}
+
+export default function Screen1_4({ onComplete, onNext, onPrevious }: Screen1_4Props) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -195,28 +204,33 @@ export default function Screen1_4() {
               <CardContent>
                 <h3 className="text-lg font-medium mb-4">{quizQuestions[currentQuestionIndex].question}</h3>
                 <div className="flex flex-col gap-2">
-                  {quizQuestions[currentQuestionIndex].options.map((option, index) => (
-                    <Button
-                      key={index}
-                      variant={selectedAnswer === option 
-                        ? (showCorrectAnswer 
-                          ? (option === quizQuestions[currentQuestionIndex].correctAnswer ? "success" : "destructive") 
-                          : "default") 
-                        : "outline"}
-                      className={`justify-start text-left h-auto py-3 ${
-                        showCorrectAnswer && option === quizQuestions[currentQuestionIndex].correctAnswer 
-                          ? "bg-green-100 border-green-500" 
-                          : ""
-                      }`}
-                      onClick={() => !selectedAnswer && handleAnswerSelect(option)}
-                      disabled={!!selectedAnswer}
-                    >
-                      {option}
-                      {showCorrectAnswer && option === quizQuestions[currentQuestionIndex].correctAnswer && (
-                        <CheckCircle className="ml-auto h-4 w-4 text-green-500" />
-                      )}
-                    </Button>
-                  ))}
+                  {quizQuestions[currentQuestionIndex].options.map((option, index) => {
+                    const isCorrect = option === quizQuestions[currentQuestionIndex].correctAnswer;
+                    const isSelected = selectedAnswer === option;
+                    
+                    return (
+                      <Button
+                        key={index}
+                        variant={
+                          !showCorrectAnswer ? "outline" :
+                          isSelected && isCorrect ? "default" :
+                          isSelected && !isCorrect ? "destructive" :
+                          isCorrect ? "outline" : "outline"
+                        }
+                        className={cn(
+                          "justify-start text-left h-auto py-3",
+                          showCorrectAnswer && isCorrect && "bg-green-100 border-green-500"
+                        )}
+                        onClick={() => !selectedAnswer && handleAnswerSelect(option)}
+                        disabled={!!selectedAnswer}
+                      >
+                        {option}
+                        {showCorrectAnswer && isCorrect && (
+                          <CheckCircle className="ml-auto h-4 w-4 text-green-500" />
+                        )}
+                      </Button>
+                    );
+                  })}
                 </div>
               </CardContent>
             </>
@@ -250,7 +264,7 @@ export default function Screen1_4() {
           <CardFooter className="flex justify-between">
             {!showResult && <div />}
             {showResult && quizCompleted && (
-              <Button className="w-full">Continuer vers l'écran suivant</Button>
+              <Button className="w-full" onClick={onNext}>Continuer vers l'écran suivant</Button>
             )}
           </CardFooter>
         </Card>

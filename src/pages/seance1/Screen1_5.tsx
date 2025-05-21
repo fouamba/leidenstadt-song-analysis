@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -7,7 +6,7 @@ import { AlertCircle, Play, Pause, SkipBack, SkipForward, Info } from 'lucide-re
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSpeech } from '@/hooks/useSpeech';
+import { useSpeechSynthesis } from '../../hooks/useSpeechSynthesis';
 
 interface Screen1_5Props {
   onComplete: () => void;
@@ -15,7 +14,7 @@ interface Screen1_5Props {
   onPrevious: () => void;
 }
 
-const Screen1_5: React.FC<Screen1_5Props> = ({ onComplete, onNext, onPrevious }) => {
+export default function Screen1_5({ onComplete, onNext, onPrevious }: Screen1_5Props) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -25,7 +24,7 @@ const Screen1_5: React.FC<Screen1_5Props> = ({ onComplete, onNext, onPrevious })
   const [activeTab, setActiveTab] = useState('lyrics');
   const [screenCompleted, setScreenCompleted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { speak } = useSpeech({ autoInit: true });
+  const { speak } = useSpeechSynthesis({ autoInit: true });
 
   const instructions = "Découvrez maintenant le texte complet de la chanson. Écoutez attentivement en suivant les paroles qui sont surlignées au fur et à mesure. Vous pouvez surligner des passages qui vous intéressent et consulter des informations supplémentaires sur certains termes.";
 
@@ -98,7 +97,7 @@ const Screen1_5: React.FC<Screen1_5Props> = ({ onComplete, onNext, onPrevious })
         { text: "Aurais-je été de ceux qui ont courbé la tête", info: "Évocation de la soumission face à l'oppression." },
         { text: "Ou l'aurais-je révoltée ?", info: "Allusion possible à l'insurrection du ghetto de Varsovie en 1943." },
         { text: "Si j'avais grandi les mains nues dans la misère", info: "Évocation de la pauvreté et du dénuement." },
-        { text: "Si j'avais dû volar pour survivre", info: "'Volar' signifie 'voler' en espagnol, référence aux actes de survie dans la pauvreté." },
+        { text: "Si j'avais dû voler pour survivre", info: "'Volar' signifie 'voler' en espagnol, référence aux actes de survie dans la pauvreté." },
         { text: "Aurais-je eu le cœur assez libre pour aimer", info: "Question sur la capacité à maintenir son humanité dans des conditions difficiles." },
         { text: "Mon prochain comme moi-même ?", info: "Référence au commandement biblique 'Tu aimeras ton prochain comme toi-même'." },
         { text: "Et si j'étais née, et si j'étais né", info: "Le passage du féminin au masculin souligne l'universalité du questionnement." },
@@ -329,6 +328,4 @@ const Screen1_5: React.FC<Screen1_5Props> = ({ onComplete, onNext, onPrevious })
       </div>
     </div>
   );
-};
-
-export default Screen1_5;
+}

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,13 @@ type ProgressionState = {
   completed: boolean;
   screenCompletion: boolean[];
 };
+
+// Define prop interfaces for each screen
+interface ScreenProps {
+  onComplete: () => void;
+  onNext: () => void;
+  onPrevious?: () => void;
+}
 
 const Seance1: React.FC = () => {
   // État pour suivre la progression

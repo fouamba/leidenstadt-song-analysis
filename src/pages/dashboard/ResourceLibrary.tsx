@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, BookOpen, Star, Clock, Search, X } from "lucide-react";
@@ -14,6 +15,14 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 
+// Types pour les filtres
+interface ResourceFiltersType {
+  types: string[];
+  tags: string[];
+  sortBy: "title" | "date" | "relevance";
+  searchTerm?: string;
+}
+
 // Composant principal d'emballage qui fournit le contexte
 export default function ResourceLibraryWrapper() {
   return (
@@ -25,10 +34,10 @@ export default function ResourceLibraryWrapper() {
 
 // Composant principal qui contient la logique de la bibliothèque
 function ResourceLibraryMain() {
-  const { resources, favoriteResources, recentlyViewed, addToFavorites, removeFromFavorites, markAsViewed } = useResources();
+  const { resources, favoriteResources, recentlyViewed, toggleFavorite, markAsViewed } = useResources();
   // Harmonisation des filtres
   const allTags = Array.from(new Set(resources.flatMap(r => r.tags)));
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<ResourceFiltersType>({
     types: [],
     tags: [],
     sortBy: 'date',
@@ -73,6 +82,10 @@ function ResourceLibraryMain() {
     markAsViewed(resource.id);
   };
 
+  const handleToggleFavorite = (resourceId: string) => {
+    toggleFavorite(resourceId);
+  };
+
   return (
     <div className="container mx-auto py-6 px-4 max-w-7xl">
       <div className="flex flex-col space-y-6">
@@ -96,7 +109,7 @@ function ResourceLibraryMain() {
               </CardHeader>
               <CardContent>
                 <ResourceFilters
-                  searchTerm={filters.searchTerm}
+                  searchTerm={filters.searchTerm || ''}
                   setSearchTerm={val => setFilters(f => ({ ...f, searchTerm: val }))}
                   activeFilters={filters}
                   setActiveFilters={f => setFilters(old => ({ ...old, ...f }))}
@@ -137,7 +150,7 @@ function ResourceLibraryMain() {
                         resource={resource}
                         isFavorite={favoriteResources.includes(resource.id)}
                         onCardClick={handleResourceClick}
-                        onFavoriteToggle={() => {}}
+                        onFavoriteToggle={() => handleToggleFavorite(resource.id)}
                       />
                     ))}
                   </div>
@@ -157,7 +170,7 @@ function ResourceLibraryMain() {
                         resource={resource}
                         isFavorite={true}
                         onCardClick={handleResourceClick}
-                        onFavoriteToggle={() => {}}
+                        onFavoriteToggle={() => handleToggleFavorite(resource.id)}
                       />
                     ))}
                   </div>
@@ -177,7 +190,7 @@ function ResourceLibraryMain() {
                         resource={resource}
                         isFavorite={favoriteResources.includes(resource.id)}
                         onCardClick={handleResourceClick}
-                        onFavoriteToggle={() => {}}
+                        onFavoriteToggle={() => handleToggleFavorite(resource.id)}
                       />
                     ))}
                   </div>
@@ -199,7 +212,7 @@ function ResourceLibraryMain() {
             <ResourceDetail
               resource={selectedResource}
               isFavorite={favoriteResources.includes(selectedResource.id)}
-              onFavoriteToggle={() => {}}
+              onFavoriteToggle={() => handleToggleFavorite(selectedResource.id)}
               onClose={() => setIsDetailOpen(false)}
             />
           )}

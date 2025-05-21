@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSpeech } from "@/hooks/useSpeech";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 interface Screen1_7Props {
   onComplete: () => void;
@@ -63,218 +62,117 @@ Celui qui <span class="verb-highlight present">est</span> d'une autre couleur...
 `;
 
 const Screen1_7: React.FC<Screen1_7Props> = ({ onComplete, onNext, onPrevious }) => {
-  const [verbs, setVerbs] = useState<Verb[]>(() => {
-    return songVerbs.map((verb) => ({ ...verb }));
-  });
-  const [selectedTense, setSelectedTense] = useState<string | null>(null);
-  const [selectedVerb, setSelectedVerb] = useState<string | null>(null);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-  const speech = useSpeech({ autoInit: true });
+  const [verbs, setVerbs] = useState<Verb[]>(songVerbs);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const { speak } = useSpeech();
 
   useEffect(() => {
-    // Instruction au chargement de l'écran
-    speech.speak("Analysez les temps verbaux utilisés dans la chanson. Sélectionnez un temps, puis cliquez sur les verbes correspondants pour les identifier.");
+    speak("Identifiez le temps de chaque verbe de la chanson. Faites glisser chaque verbe vers le temps qui convient.");
   }, []);
 
-  const handleTenseSelect = (tenseId: string) => {
-    setSelectedTense(tenseId);
-    setSelectedVerb(null);
-  };
+  // Fonction pour gérer le drag and drop
+  const onDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
 
-  const handleVerbSelect = (verbId: string) => {
-    if (!selectedTense) return;
-    
-    const updatedVerbs = verbs.map(verb => 
-      verb.id === verbId 
-        ? { ...verb, tense: selectedTense }
-        : verb
+    const verbId = result.draggableId;
+    const tense = result.destination.droppableId;
+
+    // Mettre à jour l'état des verbes
+    const updatedVerbs = verbs.map((verb) =>
+      verb.id === verbId ? { ...verb, tense: tense } : verb
     );
-    
     setVerbs(updatedVerbs);
-    setSelectedVerb(verbId);
-    
-    // Vérifier si le verbe est maintenant correctement identifié
-    const verb = updatedVerbs.find(v => v.id === verbId);
-    if (verb && verb.tense === verb.correctTense) {
-      speech.speak("Correct!");
-    } else {
-      speech.speak("Essayez encore.");
-    }
+
+    // Vérifier si tous les verbes sont correctement placés
+    const allCorrect = updatedVerbs.every(
+      (verb) => verb.tense === verb.correctTense
+    );
+    setIsCompleted(allCorrect);
   };
 
-  const checkAnswers = () => {
-    let correct = 0;
-    verbs.forEach(verb => {
-      if (verb.tense === verb.correctTense) {
-        correct++;
-      }
-    });
-    
-    setCorrectCount(correct);
-    setShowFeedback(true);
-    
-    if (correct === verbs.length) {
-      setIsComplete(true);
+  useEffect(() => {
+    if (isCompleted) {
+      speak("Félicitations ! Vous avez correctement identifié tous les temps des verbes. Vous pouvez passer à l'écran suivant.");
       onComplete();
-      speech.speak("Félicitations ! Vous avez correctement identifié tous les temps verbaux.");
-    } else {
-      speech.speak(`Vous avez correctement identifié ${correct} verbes sur ${verbs.length}. Continuez à travailler.`);
     }
-  };
-
-  const resetActivity = () => {
-    setVerbs(songVerbs.map(verb => ({ ...verb })));
-    setSelectedTense(null);
-    setSelectedVerb(null);
-    setShowFeedback(false);
-  };
-
-  // Fonction pour obtenir la classe CSS en fonction de l'état du verbe
-  const getVerbClass = (verb: Verb) => {
-    if (!showFeedback) {
-      return verb.tense 
-        ? "bg-blue-100 border-blue-300" 
-        : "bg-white border-gray-300";
-    }
-    
-    if (verb.tense === verb.correctTense) {
-      return "bg-green-100 border-green-500";
-    }
-    
-    return "bg-red-100 border-red-300";
-  };
+  }, [isCompleted, speak, onComplete]);
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Analyse linguistique guidée</h2>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Colonne de gauche: texte de la chanson */}
-        <Card className="h-full">
+    <TooltipProvider>
+      <div className="flex flex-col h-full p-6 gap-6 max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold text-center">
+          Identification des temps verbaux
+        </h1>
+        <p className="text-gray-600 text-center">
+          Faites glisser chaque verbe vers le temps qui convient.
+        </p>
+
+        <Card className="mb-4">
           <CardHeader>
-            <CardTitle>Texte de la chanson</CardTitle>
+            <CardTitle>Extrait de la chanson</CardTitle>
           </CardHeader>
           <CardContent>
-            <div 
-              className="prose prose-lg"
-              dangerouslySetInnerHTML={{ __html: songLyrics }}
-            />
+            <div dangerouslySetInnerHTML={{ __html: songLyrics }} />
           </CardContent>
         </Card>
-        
-        {/* Colonne de droite: explication de l'activité */}
-        <Card className="h-full">
-          <CardHeader>
-            <CardTitle>Analyse des temps verbaux</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4">
-              Identifiez les temps verbaux utilisés dans la chanson. Cette activité vous permet de comprendre comment
-              l'utilisation des différents temps contribue au message de l'œuvre.
-            </p>
-            
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-medium">Progression :</span>
-                <span>{correctCount}/{songVerbs.length} verbes</span>
-              </div>
-              <Progress value={(correctCount / songVerbs.length) * 100} className="h-2" />
-            </div>
-            
-            {showFeedback && (
-              <Alert className={`mb-4 ${isComplete ? "bg-green-100" : "bg-yellow-100"}`}>
-                <AlertDescription className={isComplete ? "text-green-800" : "text-yellow-800"}>
-                  {isComplete
-                    ? "Félicitations ! Vous avez correctement identifié tous les temps verbaux."
-                    : `Vous avez correctement identifié ${correctCount} verbes sur ${songVerbs.length}. Continuez votre analyse !`
-                  }
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            <div className="flex space-x-2 mt-4">
-              <Button onClick={checkAnswers}>Vérifier mes réponses</Button>
-              <Button variant="outline" onClick={resetActivity}>Recommencer</Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Sélection des temps verbaux */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-3">Sélectionnez un temps verbal:</h3>
-        <div className="flex flex-wrap gap-2">
-          {verbTenses.map((tense) => (
-            <TooltipProvider key={tense.id}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant={selectedTense === tense.id ? "default" : "outline"}
-                    onClick={() => handleTenseSelect(tense.id)}
-                    className={selectedTense === tense.id ? "bg-blue-500" : ""}
+
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {verbTenses.map((tense) => (
+              <Droppable key={tense.id} droppableId={tense.id}>
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className={`bg-gray-100 rounded-md p-4 min-h-[100px] ${snapshot.isDraggingOver ? 'bg-gray-200' : ''
+                      }`}
                   >
-                    {tense.name}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="w-64">
-                    {tense.id === "present" && "Le présent exprime une action qui se déroule au moment où l'on parle."}
-                    {tense.id === "imparfait" && "L'imparfait exprime une action passée, souvent longue ou habituelle."}
-                    {tense.id === "passe-compose" && "Le passé composé exprime une action passée, ponctuelle et achevée."}
-                    {tense.id === "conditionnel" && "Le conditionnel exprime une action soumise à condition ou hypothétique."}
-                    {tense.id === "futur" && "Le futur exprime une action qui se déroulera plus tard."}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ))}
-        </div>
-      </div>
-      
-      {/* Liste des verbes à identifier */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Verbes à identifier</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {verbs.map((verb) => (
-              <Badge
-                key={verb.id}
-                className={`px-3 py-2 cursor-pointer text-base border-2 ${getVerbClass(verb)} ${
-                  selectedVerb === verb.id ? "ring-2 ring-blue-500" : ""
-                }`}
-                onClick={() => handleVerbSelect(verb.id)}
-              >
-                {verb.text}
-                {showFeedback && (
-                  <span className={verb.tense === verb.correctTense ? "text-green-600 ml-2" : "text-red-600 ml-2"}>
-                    {verb.tense === verb.correctTense ? "✓" : "✗"}
-                  </span>
+                    <h3 className="font-semibold mb-2">{tense.name}</h3>
+                    {verbs
+                      .filter((verb) => verb.tense === tense.id)
+                      .map((verb, index) => (
+                        <Draggable key={verb.id} draggableId={verb.id} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={`bg-white rounded-md p-2 shadow-sm mb-2 cursor-grab ${snapshot.isDragging ? 'shadow-lg' : ''
+                                }`}
+                            >
+                              {verb.text}
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                    {provided.placeholder}
+                  </div>
                 )}
-              </Badge>
+              </Droppable>
             ))}
           </div>
-          
-          {selectedTense && (
-            <p className="mt-4 text-sm text-gray-600">
-              Cliquez sur les verbes qui correspondent au temps verbal "{verbTenses.find(t => t.id === selectedTense)?.name}".
-            </p>
-          )}
-        </CardContent>
-      </Card>
-      
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={onPrevious}>
-          Retour
-        </Button>
-        <Button onClick={onNext} disabled={!isComplete}>
-          Continuer
-        </Button>
+        </DragDropContext>
+
+        {isCompleted && (
+          <div className="text-center mt-4">
+            <Badge variant="success">
+              Tous les verbes sont correctement placés !
+            </Badge>
+          </div>
+        )}
+
+        <div className="flex justify-between">
+          <Button variant="outline" onClick={onPrevious}>
+            Retour
+          </Button>
+          <Button onClick={onNext} disabled={!isCompleted}>
+            Continuer
+          </Button>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
