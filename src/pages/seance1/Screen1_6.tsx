@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -15,6 +16,27 @@ interface Screen1_6Props {
   onPrevious: () => void;
 }
 
+interface ContextCompletionState {
+  allemagne: boolean;
+  belfast: boolean;
+  johannesburg: boolean;
+}
+
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+}
+
+interface Context {
+  title: string;
+  description: string;
+  videoUrl: string;
+  mapPosition: { top: string; left: string };
+  quiz: QuizQuestion[];
+}
+
 export default function Screen1_6({ onComplete, onNext, onPrevious }: Screen1_6Props) {
   const [activeContext, setActiveContext] = useState('allemagne');
   const [videoPlaying, setVideoPlaying] = useState(false);
@@ -30,12 +52,12 @@ export default function Screen1_6({ onComplete, onNext, onPrevious }: Screen1_6P
     johannesburg: false
   });
   const videoRef = useRef<HTMLVideoElement>(null);
-  const speech = useSpeechSynthesis({ autoInit: true });
+  const { speak } = useSpeechSynthesis();
   
   const instructions = "Explorez les trois contextes historiques évoqués dans la chanson. Pour chaque lieu, regardez la capsule vidéo puis répondez au quiz pour tester votre compréhension. Vous devez compléter les trois contextes pour continuer.";
 
   useEffect(() => {
-    speech.speak(instructions);
+    speak(instructions);
   }, []);
 
   const contexts: Record<string, Context> = {

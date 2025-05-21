@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useSpeech } from "@/hooks/useSpeech";
 import { Button } from "@/components/ui/button";
@@ -157,7 +158,7 @@ const Screen1_7: React.FC<Screen1_7Props> = ({ onComplete, onNext, onPrevious })
 
         {isCompleted && (
           <div className="text-center mt-4">
-            <Badge variant="success">
+            <Badge variant="outline">
               Tous les verbes sont correctement placés !
             </Badge>
           </div>

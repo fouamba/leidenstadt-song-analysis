@@ -24,7 +24,7 @@ export default function Screen1_5({ onComplete, onNext, onPrevious }: Screen1_5P
   const [activeTab, setActiveTab] = useState('lyrics');
   const [screenCompleted, setScreenCompleted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { speak } = useSpeechSynthesis({ autoInit: true });
+  const { speak } = useSpeechSynthesis(); 
 
   const instructions = "Découvrez maintenant le texte complet de la chanson. Écoutez attentivement en suivant les paroles qui sont surlignées au fur et à mesure. Vous pouvez surligner des passages qui vous intéressent et consulter des informations supplémentaires sur certains termes.";
 
