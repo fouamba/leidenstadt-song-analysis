@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,8 @@ import Seance from "./pages/Seance";
 import Seance1 from "./pages/Seance1";
 import HistoricalContext from "./pages/HistoricalContext";
 import Lyrics from "./pages/Lyrics";
+import ResourceLibraryWrapper from "./pages/dashboard/ResourceLibrary";
+import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,8 @@ const App = () => (
                 <Route path="/seance1" element={<Seance1 />} />
                 <Route path="/contexte-historique" element={<HistoricalContext />} />
                 <Route path="/paroles" element={<Lyrics />} />
+                <Route path="/dashboard" element={<ResourceLibraryWrapper />} />
+                <Route path="/teacher" element={<TeacherDashboard />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

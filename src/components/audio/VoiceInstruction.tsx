@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useSpeech } from '../../hooks/useSpeech';
 import { Button } from "@/components/ui/button";
@@ -118,3 +117,5 @@ export const VoiceInstruction: React.FC<VoiceInstructionProps> = ({
     </div>
   );
 };
+
+export default VoiceInstruction;

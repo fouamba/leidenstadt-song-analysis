@@ -1,0 +1,260 @@
+import { useState, useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { AlertCircle, Play, Pause, SkipBack, SkipForward, CheckCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useSpeechSynthesis } from '../../hooks/useSpeechSynthesis';
+
+export default function Screen1_4() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+  const audioRef = useRef(null);
+  const { speak } = useSpeechSynthesis();
+
+  const instructions = "Écoutez attentivement la chanson et analysez sa structure musicale. Vous devrez ensuite répondre à un quiz pour démontrer votre compréhension. Pour avancer à l'écran suivant, vous devez obtenir un score parfait au quiz.";
+
+  useEffect(() => {
+    speak(instructions);
+  }, []);
+
+  const quizQuestions = [
+    {
+      question: "Combien de couplets comporte la chanson ?",
+      options: ["2 couplets", "3 couplets", "4 couplets", "5 couplets"],
+      correctAnswer: "3 couplets"
+    },
+    {
+      question: "Quelle est la structure principale de la chanson ?",
+      options: ["Couplet - Refrain - Couplet - Refrain - Couplet - Refrain", 
+                "Introduction - Couplet - Refrain - Couplet - Pont - Refrain", 
+                "Couplet - Pont - Couplet - Pont - Couplet - Conclusion",
+                "Introduction - Couplet - Pont - Couplet - Pont - Couplet - Conclusion"],
+      correctAnswer: "Couplet - Pont - Couplet - Pont - Couplet - Conclusion"
+    },
+    {
+      question: "Quel instrument est prédominant dans l'introduction ?",
+      options: ["Batterie", "Piano", "Guitare acoustique", "Synthétiseur"],
+      correctAnswer: "Piano"
+    },
+    {
+      question: "Comment évolue l'intensité musicale au cours de la chanson ?",
+      options: ["Elle reste constante du début à la fin", 
+                "Elle diminue progressivement", 
+                "Elle augmente progressivement avec un pic à la fin",
+                "Elle alterne entre forte et douce"],
+      correctAnswer: "Elle augmente progressivement avec un pic à la fin"
+    },
+    {
+      question: "Comment se termine musicalement la chanson ?",
+      options: ["Par une note de piano solo", 
+                "Par un fondu progressif", 
+                "Par un accord final suivi d'un silence",
+                "Par la voix a cappella"],
+      correctAnswer: "Par un fondu progressif"
+    }
+  ];
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleSkipBack = () => {
+    audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 10);
+  };
+
+  const handleSkipForward = () => {
+    audioRef.current.currentTime = Math.min(duration, audioRef.current.currentTime + 10);
+  };
+
+  const handleTimeUpdate = () => {
+    setCurrentTime(audioRef.current.currentTime);
+  };
+
+  const handleLoadedMetadata = () => {
+    setDuration(audioRef.current.duration);
+  };
+
+  const startQuiz = () => {
+    setQuizStarted(true);
+    speak("Commençons le quiz sur la structure musicale de la chanson.");
+  };
+
+  const handleAnswerSelect = (answer) => {
+    setSelectedAnswer(answer);
+    setShowCorrectAnswer(true);
+    
+    if (answer === quizQuestions[currentQuestionIndex].correctAnswer) {
+      setScore(score + 1);
+      speak("Bonne réponse !");
+    } else {
+      speak("Incorrect. La bonne réponse est : " + quizQuestions[currentQuestionIndex].correctAnswer);
+    }
+    
+    setTimeout(() => {
+      if (currentQuestionIndex < quizQuestions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setSelectedAnswer(null);
+        setShowCorrectAnswer(false);
+      } else {
+        setShowResult(true);
+        if (score + (answer === quizQuestions[currentQuestionIndex].correctAnswer ? 1 : 0) === quizQuestions.length) {
+          setQuizCompleted(true);
+          speak("Félicitations ! Vous avez répondu correctement à toutes les questions. Vous pouvez maintenant passer à l'écran suivant.");
+        } else {
+          speak("Vous n'avez pas obtenu un score parfait. Veuillez réessayer le quiz.");
+          setTimeout(() => {
+            resetQuiz();
+          }, 3000);
+        }
+      }
+    }, 2000);
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setShowResult(false);
+    setSelectedAnswer(null);
+    setShowCorrectAnswer(false);
+  };
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  return (
+    <div className="flex flex-col h-full p-6 gap-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold text-center">Analyse de la structure musicale</h1>
+      
+      <Alert className="bg-blue-50">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Instructions</AlertTitle>
+        <AlertDescription>{instructions}</AlertDescription>
+      </Alert>
+      
+      <div className="flex flex-col gap-4 items-center">
+        <audio 
+          ref={audioRef}
+          src="https://example.com/ne-en-17-a-leidenstadt.mp3" 
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
+          onEnded={() => setIsPlaying(false)}
+        />
+        
+        <div className="w-full">
+          <div className="flex justify-between text-sm mb-1">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
+          <Progress value={(currentTime / duration) * 100} className="w-full" />
+        </div>
+        
+        <div className="flex gap-4">
+          <Button variant="outline" onClick={handleSkipBack}>
+            <SkipBack className="h-4 w-4" />
+          </Button>
+          <Button onClick={handlePlayPause}>
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          </Button>
+          <Button variant="outline" onClick={handleSkipForward}>
+            <SkipForward className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+      
+      {!quizStarted ? (
+        <div className="flex justify-center mt-8">
+          <Button onClick={startQuiz} className="px-8 py-6 text-lg">
+            Commencer le quiz
+          </Button>
+        </div>
+      ) : (
+        <Card className="w-full mt-4">
+          {!showResult ? (
+            <>
+              <CardHeader>
+                <CardTitle>Question {currentQuestionIndex + 1} sur {quizQuestions.length}</CardTitle>
+                <CardDescription>Score actuel: {score}/{quizQuestions.length}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <h3 className="text-lg font-medium mb-4">{quizQuestions[currentQuestionIndex].question}</h3>
+                <div className="flex flex-col gap-2">
+                  {quizQuestions[currentQuestionIndex].options.map((option, index) => (
+                    <Button
+                      key={index}
+                      variant={selectedAnswer === option 
+                        ? (showCorrectAnswer 
+                          ? (option === quizQuestions[currentQuestionIndex].correctAnswer ? "success" : "destructive") 
+                          : "default") 
+                        : "outline"}
+                      className={`justify-start text-left h-auto py-3 ${
+                        showCorrectAnswer && option === quizQuestions[currentQuestionIndex].correctAnswer 
+                          ? "bg-green-100 border-green-500" 
+                          : ""
+                      }`}
+                      onClick={() => !selectedAnswer && handleAnswerSelect(option)}
+                      disabled={!!selectedAnswer}
+                    >
+                      {option}
+                      {showCorrectAnswer && option === quizQuestions[currentQuestionIndex].correctAnswer && (
+                        <CheckCircle className="ml-auto h-4 w-4 text-green-500" />
+                      )}
+                    </Button>
+                  ))}
+                </div>
+              </CardContent>
+            </>
+          ) : (
+            <>
+              <CardHeader>
+                <CardTitle>Résultats du quiz</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-lg mb-4">Votre score: {score}/{quizQuestions.length}</p>
+                {quizCompleted ? (
+                  <Alert className="bg-green-50">
+                    <CheckCircle className="h-4 w-4" />
+                    <AlertTitle>Félicitations !</AlertTitle>
+                    <AlertDescription>
+                      Vous avez complété le quiz avec succès. Vous pouvez maintenant passer à l'écran suivant.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <Alert className="bg-amber-50">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Score insuffisant</AlertTitle>
+                    <AlertDescription>
+                      Vous devez obtenir un score parfait pour continuer. Le quiz va recommencer.
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </CardContent>
+            </>
+          )}
+          <CardFooter className="flex justify-between">
+            {!showResult && <div />}
+            {showResult && quizCompleted && (
+              <Button className="w-full">Continuer vers l'écran suivant</Button>
+            )}
+          </CardFooter>
+        </Card>
+      )}
+    </div>
+  );
+}

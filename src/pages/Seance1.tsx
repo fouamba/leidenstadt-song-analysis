@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -11,9 +10,13 @@ import { useVoicePreferences } from '@/contexts/VoicePreferencesContext';
 import Screen1_1 from './seance1/Screen1_1';
 import Screen1_2 from './seance1/Screen1_2';
 import Screen1_3 from './seance1/Screen1_3';
+import Screen1_4 from './seance1/Screen1_4';
 import Screen1_5 from './seance1/Screen1_5';
 import Screen1_6 from './seance1/Screen1_6';
 import Screen1_7 from './seance1/Screen1_7';
+import Screen1_8 from './seance1/Screen1_8';
+import Screen1_9 from './seance1/Screen1_9';
+import Screen1_10 from './seance1/Screen1_10';
 
 // Types pour le suivi de progression
 type ProgressionState = {
@@ -27,9 +30,9 @@ const Seance1: React.FC = () => {
   // État pour suivre la progression
   const [progression, setProgression] = useState<ProgressionState>({
     currentScreen: 1,
-    totalScreens: 6, // Nous avons maintenant 6 écrans
+    totalScreens: 10, // 10 écrans désormais
     completed: false,
-    screenCompletion: Array(6).fill(false),
+    screenCompletion: Array(10).fill(false),
   });
 
   const navigate = useNavigate();
@@ -104,21 +107,45 @@ const Seance1: React.FC = () => {
           onPrevious={previousScreen} 
         />;
       case 4:
-        return <Screen1_5 
+        return <Screen1_4 
           onComplete={completeCurrentScreen} 
           onNext={nextScreen} 
           onPrevious={previousScreen} 
         />;
       case 5:
-        return <Screen1_6 
+        return <Screen1_5 
           onComplete={completeCurrentScreen} 
           onNext={nextScreen} 
           onPrevious={previousScreen} 
         />;
       case 6:
+        return <Screen1_6 
+          onComplete={completeCurrentScreen} 
+          onNext={nextScreen} 
+          onPrevious={previousScreen} 
+        />;
+      case 7:
         return <Screen1_7 
           onComplete={completeCurrentScreen} 
-          onNext={() => navigate('/seance/1')} 
+          onNext={nextScreen} 
+          onPrevious={previousScreen} 
+        />;
+      case 8:
+        return <Screen1_8 
+          onComplete={completeCurrentScreen} 
+          onNext={nextScreen} 
+          onPrevious={previousScreen} 
+        />;
+      case 9:
+        return <Screen1_9 
+          onComplete={completeCurrentScreen} 
+          onNext={nextScreen} 
+          onPrevious={previousScreen} 
+        />;
+      case 10:
+        return <Screen1_10 
+          onComplete={completeCurrentScreen} 
+          onNext={() => navigate('/seance/2')} 
           onPrevious={previousScreen} 
         />;
       default:
