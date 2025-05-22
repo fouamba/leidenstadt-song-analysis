@@ -17,14 +17,14 @@ const Index = () => {
               <p className="text-xl mb-8">Une approche pédagogique par situations (APS) autour de la chanson de Jean-Jacques Goldman</p>
               
               <div className="mt-8 mb-10">
-                <div className="relative w-full aspect-video max-w-4xl mx-auto overflow-hidden rounded-lg shadow-lg">
-                  <video 
+                <div className="aspect-video rounded-md overflow-hidden bg-gray-100 relative">
+                  <video
+                    src="/Comprendre la chanson _Né en 17 à Leidenstadt_.mp4"
                     controls
-                    className="absolute top-0 left-0 w-full h-full"
-                    poster="/placeholder.svg"
+                    className="w-full h-full object-cover"
+                    poster="/leidenstadt_accueil.jpg"
                   >
-                    <source src="/Comprendre la chanson _Né en 17 à Leidenstadt_.mp4" type="video/mp4" />
-                    Votre navigateur ne prend pas en charge la lecture de vidéos.
+                    Votre navigateur ne supporte pas la lecture vidéo.
                   </video>
                 </div>
               </div>
