@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { seances } from "@/data/seances";
-import { Book, FileText, Home, Info, BookOpen } from "lucide-react";
+import { Book, FileText, Home, Info, BookOpen, BarChart } from "lucide-react";
 import { Badge as UIBadge } from "@/components/ui/badge";  // Import shadcn Badge with the same alias as in Home.tsx
 import { useProgress } from "@/contexts/ProgressContext";
 
@@ -41,22 +41,23 @@ export function NavigationBar() {
                     const progress = getSeanceProgress(seance.id);
                     
                     return (
-                      <ListItem
-                        key={seance.id}
-                        title={`Séance ${seance.id}: ${seance.title}`}
-                        href={seance.id === 1 ? "/seance1" : `/seance/${seance.id}`}
-                      >
-                        <div className="flex flex-col space-y-1">
-                          <div>{seance.objectives.skill}</div>
-                          {progress > 0 && (
-                            <div className="flex items-center mt-1">
-                              <UIBadge variant="secondary" className="text-xs">
-                                {progress}% complété
-                              </UIBadge>
-                            </div>
-                          )}
-                        </div>
-                      </ListItem>
+                      <li key={seance.id}>
+                        <ListItem
+                          title={`Séance ${seance.id}: ${seance.title}`}
+                          href={seance.id === 1 ? "/seance1" : `/seance/${seance.id}`}
+                        >
+                          <div className="flex flex-col space-y-1">
+                            <div>{seance.objectives.skill}</div>
+                            {progress > 0 && (
+                              <div className="flex items-center mt-1">
+                                <UIBadge variant="secondary" className="text-xs">
+                                  {progress}% complété
+                                </UIBadge>
+                              </div>
+                            )}
+                          </div>
+                        </ListItem>
+                      </li>
                     );
                   })}
                 </ul>
@@ -87,6 +88,24 @@ export function NavigationBar() {
               >
                 <BookOpen className="h-5 w-5" />
                 <span>Tableau de bord</span>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link 
+                to="/resources" 
+                className="flex items-center space-x-2 font-medium text-slate-700 hover:text-slate-900"
+              >
+                <FileText className="h-5 w-5" />
+                <span>Ressources</span>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link 
+                to="/teacher" 
+                className="flex items-center space-x-2 font-medium text-slate-700 hover:text-slate-900"
+              >
+                <BarChart className="h-5 w-5" />
+                <span>Module enseignant</span>
               </Link>
             </NavigationMenuItem>
           </NavigationMenuList>

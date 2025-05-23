@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -43,10 +42,12 @@ export default function Screen1_4({ onComplete, onNext, onPrevious }: Screen1_4P
     },
     {
       question: "Quelle est la structure principale de la chanson ?",
-      options: ["Couplet - Refrain - Couplet - Refrain - Couplet - Refrain", 
-                "Introduction - Couplet - Refrain - Couplet - Pont - Refrain", 
-                "Couplet - Pont - Couplet - Pont - Couplet - Conclusion",
-                "Introduction - Couplet - Pont - Couplet - Pont - Couplet - Conclusion"],
+      options: [
+        "Couplet - Refrain - Couplet - Refrain - Couplet - Refrain", 
+        "Introduction - Couplet - Refrain - Couplet - Pont - Refrain", 
+        "Couplet - Pont - Couplet - Pont - Couplet - Conclusion",
+        "Introduction - Couplet - Pont - Couplet - Pont - Couplet - Conclusion"
+      ],
       correctAnswer: "Couplet - Pont - Couplet - Pont - Couplet - Conclusion"
     },
     {
@@ -56,19 +57,80 @@ export default function Screen1_4({ onComplete, onNext, onPrevious }: Screen1_4P
     },
     {
       question: "Comment évolue l'intensité musicale au cours de la chanson ?",
-      options: ["Elle reste constante du début à la fin", 
-                "Elle diminue progressivement", 
-                "Elle augmente progressivement avec un pic à la fin",
-                "Elle alterne entre forte et douce"],
+      options: [
+        "Elle reste constante du début à la fin", 
+        "Elle diminue progressivement", 
+        "Elle augmente progressivement avec un pic à la fin",
+        "Elle alterne entre forte et douce"
+      ],
       correctAnswer: "Elle augmente progressivement avec un pic à la fin"
     },
     {
       question: "Comment se termine musicalement la chanson ?",
-      options: ["Par une note de piano solo", 
-                "Par un fondu progressif", 
-                "Par un accord final suivi d'un silence",
-                "Par la voix a cappella"],
+      options: [
+        "Par une note de piano solo", 
+        "Par un fondu progressif", 
+        "Par un accord final suivi d'un silence",
+        "Par la voix a cappella"
+      ],
       correctAnswer: "Par un fondu progressif"
+    },
+    // Ajout de nouvelles questions pédagogiques
+    {
+      question: "Quel est le schéma de rimes dominant dans les couplets ?",
+      options: [
+        "AABB", "ABAB", "ABBA", "AABBAA"
+      ],
+      correctAnswer: "ABAB"
+    },
+    {
+      question: "Quel élément rythmique marque le refrain ?",
+      options: [
+        "Un changement de tempo", "Une accentuation de la batterie", "Un silence marqué", "Un retour du piano solo"
+      ],
+      correctAnswer: "Une accentuation de la batterie"
+    },
+    {
+      question: "Comment la voix du chanteur évolue-t-elle dans le refrain ?",
+      options: [
+        "Elle reste douce et posée", "Elle devient plus puissante et expressive", "Elle disparaît au profit des chœurs", "Elle est parlée"
+      ],
+      correctAnswer: "Elle devient plus puissante et expressive"
+    },
+    {
+      question: "Quel effet est utilisé pour souligner certains mots importants dans la chanson ?",
+      options: [
+        "Un écho sonore", "Un silence soudain", "Une montée de volume", "Un effet de réverbération"
+      ],
+      correctAnswer: "Une montée de volume"
+    },
+    {
+      question: "À quel moment la chanson change-t-elle de tonalité ou d’ambiance ?",
+      options: [
+        "Au début du deuxième couplet", "Au début du pont musical", "Juste avant la conclusion", "Il n’y a pas de changement notable"
+      ],
+      correctAnswer: "Au début du pont musical"
+    },
+    {
+      question: "Quel est le rôle du pont musical dans la chanson ?",
+      options: [
+        "Introduire un nouveau thème musical", "Créer une rupture et relancer l’attention", "Servir de transition vers le refrain final", "Mettre en avant un solo d’instrument"
+      ],
+      correctAnswer: "Créer une rupture et relancer l’attention"
+    },
+    {
+      question: "Quel mot ou expression revient le plus souvent dans le refrain ?",
+      options: [
+        "Leidenstadt", "Si j’étais né", "Différent", "Guerre"
+      ],
+      correctAnswer: "Si j’étais né"
+    },
+    {
+      question: "Quel sentiment la mélodie du refrain cherche-t-elle à transmettre ?",
+      options: [
+        "La joie", "La nostalgie", "L’empathie et la réflexion", "La colère"
+      ],
+      correctAnswer: "L’empathie et la réflexion"
     }
   ];
 
@@ -160,7 +222,7 @@ export default function Screen1_4({ onComplete, onNext, onPrevious }: Screen1_4P
       <div className="flex flex-col gap-4 items-center">
         <audio 
           ref={audioRef}
-          src="https://example.com/ne-en-17-a-leidenstadt.mp3" 
+          src="/ne-en-17-a-leidenstadt.mp3" 
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onEnded={() => setIsPlaying(false)}

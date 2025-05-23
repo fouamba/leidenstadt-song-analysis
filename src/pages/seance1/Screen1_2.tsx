@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,7 +36,7 @@ const Screen1_2: React.FC<Screen1_2Props> = ({ onComplete, onNext, onPrevious })
   
   // Vérifier si l'écran est complété
   useEffect(() => {
-    if (hasListened && journalContent.length >= 30) {
+    if (hasListened && journalContent.length >= 50) {
       onComplete();
     }
   }, [hasListened, journalContent, onComplete]);
@@ -60,7 +59,7 @@ const Screen1_2: React.FC<Screen1_2Props> = ({ onComplete, onNext, onPrevious })
       
       {/* Lecteur vidéo YouTube */}
       <div className="aspect-video relative">
-        <YouTubeEmbed videoId={youtubeVideoId} title="Jean-Jacques Goldman - Né en 17 à Leidenstadt" />
+        <YouTubeEmbed videoId={youtubeVideoId} title="Jean-Jacques Goldman - Né en 17 à Leidenstadt" onEnd={handleVideoEnded} />
       </div>
       
       {/* Alerte si tentative d'afficher les paroles */}
@@ -95,8 +94,8 @@ const Screen1_2: React.FC<Screen1_2Props> = ({ onComplete, onNext, onPrevious })
           onChange={(e) => setJournalContent(e.target.value)}
         />
         <p className="text-sm text-gray-500 mt-2">
-          {journalContent.length < 30 ? 
-            `Encore ${30 - journalContent.length} caractères minimum...` : 
+          {journalContent.length < 50 ? 
+            `Encore ${50 - journalContent.length} caractères minimum...` : 
             "Vous pouvez continuer à enrichir vos impressions ou passer à la suite."
           }
         </p>
@@ -109,7 +108,7 @@ const Screen1_2: React.FC<Screen1_2Props> = ({ onComplete, onNext, onPrevious })
         </Button>
         <Button 
           onClick={onNext}
-          disabled={!hasListened || journalContent.length < 30}
+          disabled={!hasListened || journalContent.length < 50}
         >
           Continuer
         </Button>

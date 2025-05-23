@@ -14,6 +14,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import VoiceInstruction from "@/components/audio/VoiceInstruction"; // Assurez-vous que le chemin est correct
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -65,7 +66,15 @@ const HomePage: React.FC = () => {
           </div>
           <nav className="flex items-center gap-6">
             <Button variant="ghost" onClick={() => navigate("/")}>Accueil</Button>
-            <Button variant="ghost" onClick={() => navigate("/seance1")}>Séance 1</Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost">Séances</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => navigate("/seance1")}>Séance 1</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/seance2")}>Séance 2</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="ghost" onClick={() => navigate("/dashboard")}>Tableau de bord</Button>
             <Button variant="ghost" onClick={() => navigate("/resources")}>Ressources</Button>
             <Button variant="ghost" onClick={() => navigate("/aide")}>Aide</Button>
