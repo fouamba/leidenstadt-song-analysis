@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -399,8 +398,8 @@ const TeacherDashboard: React.FC = () => {
                           </div>
                         </div>
                         <Badge variant={student.alertLevel === 'high' ? 'destructive' : 'default'}>
-                          {student.alertLevel === 'high' && <ExclamationTriangle className="w-4 h-4 mr-1" />}
-                          {student.alertLevel === 'medium' && <ExclamationCircle className="w-4 h-4 mr-1" />}
+                          {student.alertLevel === 'high' && <AlertTriangle className="w-4 h-4 mr-1" />}
+                          {student.alertLevel === 'medium' && <AlertCircle className="w-4 h-4 mr-1" />}
                           {student.alertLevel === 'low' && <Info className="w-4 h-4 mr-1" />}
                           {student.alertLevel === 'none' && <CheckCircle className="w-4 h-4 mr-1" />}
                           {student.alertLevel.charAt(0).toUpperCase() + student.alertLevel.slice(1)}
