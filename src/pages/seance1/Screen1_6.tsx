@@ -8,25 +8,12 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { useSpeech } from '@/hooks/useSpeech';
+import { useSpeechSynthesis } from '../../hooks/useSpeechSynthesis';
 
 interface Screen1_6Props {
   onComplete: () => void;
   onNext: () => void;
   onPrevious: () => void;
-}
-
-interface Context {
-  title: string;
-  description: string;
-  videoUrl: string;
-  mapPosition: { top: string; left: string };
-  quiz: {
-    question: string;
-    options: string[];
-    correctAnswer: string;
-    explanation: string;
-  }[];
 }
 
 interface ContextCompletionState {
@@ -35,7 +22,22 @@ interface ContextCompletionState {
   johannesburg: boolean;
 }
 
-const Screen1_6: React.FC<Screen1_6Props> = ({ onComplete, onNext, onPrevious }) => {
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+}
+
+interface Context {
+  title: string;
+  description: string;
+  videoUrl: string;
+  mapPosition: { top: string; left: string };
+  quiz: QuizQuestion[];
+}
+
+export default function Screen1_6({ onComplete, onNext, onPrevious }: Screen1_6Props) {
   const [activeContext, setActiveContext] = useState('allemagne');
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [videoProgress, setVideoProgress] = useState(0);
@@ -50,12 +52,12 @@ const Screen1_6: React.FC<Screen1_6Props> = ({ onComplete, onNext, onPrevious })
     johannesburg: false
   });
   const videoRef = useRef<HTMLVideoElement>(null);
-  const speech = useSpeech({ autoInit: true });
+  const { speak } = useSpeechSynthesis();
   
   const instructions = "Explorez les trois contextes historiques évoqués dans la chanson. Pour chaque lieu, regardez la capsule vidéo puis répondez au quiz pour tester votre compréhension. Vous devez compléter les trois contextes pour continuer.";
 
   useEffect(() => {
-    speech.speak(instructions);
+    speak(instructions);
   }, []);
 
   const contexts: Record<string, Context> = {
@@ -471,6 +473,4 @@ const Screen1_6: React.FC<Screen1_6Props> = ({ onComplete, onNext, onPrevious })
       </div>
     </div>
   );
-};
-
-export default Screen1_6;
+}

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +11,13 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { BookOpen, ExternalLink, Award, CheckCircle, FileText, Globe } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
+
+// Props interface for Screen1_10
+interface Screen1_10Props {
+  onComplete: () => void;
+  onNext: () => void;
+  onPrevious: () => void;
+}
 
 // Structure pour les ressources recommandées
 interface Resource {
@@ -32,7 +40,7 @@ interface Question {
   userAnswer?: string | string[];
 }
 
-const Screen1_10 = () => {
+const Screen1_10: React.FC<Screen1_10Props> = ({ onComplete, onNext, onPrevious }) => {
   // ...le code fourni...
   return (
     <div className="container mx-auto p-4">

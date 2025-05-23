@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   Card, 
@@ -12,14 +13,15 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Book, BookOpen, Download, Star, StarOff } from "lucide-react";
 import { Resource, useResources } from './ResourceProvider';
 
-interface ResourceCardProps {
+export interface ResourceCardProps {
   resource: Resource;
-  onOpenResource: (resource: Resource) => void;
+  isFavorite: boolean;
+  onCardClick: (resource: Resource) => void;
+  onFavoriteToggle: () => void;
 }
 
-export const ResourceCard: React.FC<ResourceCardProps> = ({ resource, onOpenResource }) => {
-  const { favoriteResources, toggleFavorite, markAsViewed } = useResources();
-  const isFavorite = favoriteResources.includes(resource.id);
+export const ResourceCard: React.FC<ResourceCardProps> = ({ resource, onCardClick, isFavorite, onFavoriteToggle }) => {
+  const { markAsViewed } = useResources();
 
   // Déterminer l'icône et le style pour chaque type de ressource
   const getResourceIcon = (type: string) => {
@@ -50,7 +52,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({ resource, onOpenReso
 
   const handleOpenResource = () => {
     markAsViewed(resource.id);
-    onOpenResource(resource);
+    onCardClick(resource);
   };
 
   const handleDownload = (e: React.MouseEvent) => {
@@ -64,7 +66,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({ resource, onOpenReso
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toggleFavorite(resource.id);
+    onFavoriteToggle();
   };
 
   return (
