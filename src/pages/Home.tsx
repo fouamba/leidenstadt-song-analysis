@@ -73,6 +73,7 @@ const HomePage: React.FC = () => {
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => navigate("/seance1")}>Séance 1</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/seance2")}>Séance 2</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/seance3")}>Séance 3</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button variant="ghost" onClick={() => navigate("/dashboard")}>Tableau de bord</Button>
@@ -156,6 +157,98 @@ const HomePage: React.FC = () => {
             </CardContent>
           </Card>
 
+          {/* Cartes dédiées pour chaque séance */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8 md:col-span-2">
+            {/* Séance 1 */}
+            <Card className="border-2 border-blue-400 shadow-lg bg-blue-50 min-w-0 md:min-w-[340px] md:max-w-full md:w-full xl:w-[95%] mx-auto">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-blue-700">
+                  <BookOpen className="w-5 h-5" /> Séance 1 : Découverte et compréhension globale de l'œuvre
+                </CardTitle>
+                <CardDescription>
+                  Introduction à la chanson, premières impressions, compréhension globale et contexte historique.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <Clock className="w-4 h-4" /> Durée estimée : 45 minutes
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <Award className="w-4 h-4" /> Badges à débloquer
+                  </div>
+                  <Button variant="default" className="mt-2 w-fit" onClick={() => navigate("/seance1")}>Accéder à la Séance 1 <ChevronRight className="w-4 h-4 ml-1" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Séance 2 */}
+            <Card className="border-2 border-blue-400 shadow-lg bg-blue-50 min-w-0 md:min-w-[340px] md:max-w-full md:w-full xl:w-[95%] mx-auto">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-blue-700">
+                  <BookOpen className="w-5 h-5" /> Séance 2 : L'expression du passé par les temps de l'indicatif
+                </CardTitle>
+                <CardDescription>
+                  Analyse des temps du passé, exercices d'application et exploration stylistique.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <Clock className="w-4 h-4" /> Durée estimée : 50 minutes
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <Award className="w-4 h-4" /> Badges à débloquer
+                  </div>
+                  <Button variant="default" className="mt-2 w-fit" onClick={() => navigate("/seance2")}>Accéder à la Séance 2 <ChevronRight className="w-4 h-4 ml-1" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Séance 3 */}
+            <Card className="border-2 border-blue-400 shadow-lg bg-blue-50 min-w-0 md:min-w-[340px] md:max-w-full md:w-full xl:w-[95%] mx-auto">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-blue-700">
+                  <BookOpen className="w-5 h-5" /> Séance 3 : L'expression du possible et de l'hypothétique
+                </CardTitle>
+                <CardDescription>
+                  Approfondissez le mode conditionnel à travers des activités interactives, quiz, laboratoire de style et atelier d'écriture.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <Clock className="w-4 h-4" /> Durée estimée : 55 minutes
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <Award className="w-4 h-4" /> Badges à débloquer
+                  </div>
+                  <Button variant="default" className="mt-2 w-fit" onClick={() => navigate("/seance3")}>Accéder à la Séance 3 <ChevronRight className="w-4 h-4 ml-1" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Séance 4 */}
+            <Card className="border-2 border-blue-400 shadow-lg bg-blue-50 min-w-0 md:min-w-[340px] md:max-w-full md:w-full xl:w-[95%] mx-auto">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-blue-700">
+                  <BookOpen className="w-5 h-5" /> Séance 4 : La phrase complexe et la communication artistique
+                </CardTitle>
+                <CardDescription>
+                  Analyse de la phrase complexe, communication artistique et préparation du commentaire final.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <Clock className="w-4 h-4" /> Durée estimée : 60 minutes
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <Award className="w-4 h-4" /> Badges à débloquer
+                  </div>
+                  <Button variant="default" className="mt-2 w-fit" onClick={() => navigate("/seance4")}>Accéder à la Séance 4 <ChevronRight className="w-4 h-4 ml-1" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Sessions list */}
           <Card>
             <CardHeader>
@@ -211,7 +304,7 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Right sidebar */}
-        <div className="space-y-6">
+        <div className="space-y-6 sticky top-[120px] self-start max-h-[calc(100vh-180px)] overflow-auto" style={{alignSelf:'flex-start'}}>
           {/* Student dashboard */}
           <Card>
             <CardHeader>

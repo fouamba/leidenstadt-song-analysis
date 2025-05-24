@@ -304,7 +304,12 @@ const TeacherDashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-7xl">
-      <h1 className="text-3xl font-bold mb-6">Module Enseignant - Né en 17 à Leidenstadt</h1>
+      <div className="flex items-center gap-4 mb-4">
+        <Button asChild variant="outline">
+          <a href="/">Accueil</a>
+        </Button>
+        <h1 className="text-3xl font-bold">Module Enseignant - Né en 17 à Leidenstadt</h1>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Card className="bg-primary text-primary-foreground">
           <CardHeader>

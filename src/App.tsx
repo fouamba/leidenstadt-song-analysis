@@ -13,6 +13,8 @@ import NotFound from "./pages/NotFound";
 import Seance from "./pages/Seance";
 import Seance1 from "./pages/Seance1";
 import Seance2 from "./pages/Seance2";
+import Seance3 from "./pages/Seance3";
+import Seance4 from "./pages/Seance4";
 import HistoricalContext from "./pages/HistoricalContext";
 import Lyrics from "./pages/Lyrics";
 import ResourceLibraryWrapper from "./pages/dashboard/ResourceLibrary";
@@ -35,6 +37,8 @@ const App = () => (
                 <Route path="/seance/:id" element={<Seance />} />
                 <Route path="/seance1" element={<Seance1 />} />
                 <Route path="/seance2" element={<Seance2 />} />
+                <Route path="/seance3" element={<Seance3 />} />
+                <Route path="/seance4" element={<Seance4 />} />
                 <Route path="/contexte-historique" element={<HistoricalContext />} />
                 <Route path="/paroles" element={<Lyrics />} />
                 <Route path="/dashboard" element={<StudentDashboard />} />
