@@ -1,3 +1,4 @@
+
 // src/factory/ActivityFactory.ts
 import { Activity, ActivityType, ActivityConfig } from '../models/activity';
 // Importez ici les classes d'activités spécifiques (à créer)
@@ -7,7 +8,7 @@ import { Activity, ActivityType, ActivityConfig } from '../models/activity';
 export class ActivityFactory {
   static createActivity(config: ActivityConfig, data: any): Activity {
     switch (config.type) {
-      // case 'quiz':
+      // case ActivityType.QUIZ:
       //   return new QuizActivity(config, data);
       // Ajoutez d'autres types d'activités ici
       default:

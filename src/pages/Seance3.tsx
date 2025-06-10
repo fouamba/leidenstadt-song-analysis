@@ -40,6 +40,15 @@ const Seance3Conditionnel = () => {
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  const handleRestart = () => {
+    setCurrentScreen(0);
+    setUserResponses(Array(4).fill(''));
+    setScore(0);
+    setShowResults(false);
+    setTimer(30);
+    setIsPaused(false);
+  };
+
   const screens = [
     {
       id: 1,
@@ -119,15 +128,6 @@ const Seance3Conditionnel = () => {
     const calculatedScore = userResponses.filter((response) => response !== '').length;
     setScore(calculatedScore);
     setShowResults(true);
-  };
-
-  const handleRestart = () => {
-    setCurrentScreen(0);
-    setUserResponses(Array(4).fill(''));
-    setScore(0);
-    setShowResults(false);
-    setTimer(30);
-    setIsPaused(false);
   };
 
   useEffect(() => {

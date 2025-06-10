@@ -1,9 +1,7 @@
+
 // src/hooks/useActivity.ts
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { ActivityConfig, ActivityProgress, ActivityStatus } from '../models/activity';
-import { ProgressContext } from '../contexts/ProgressContext';
-import { CompetenceContext } from '../contexts/CompetenceContext';
-// AdaptationContext à créer si besoin
 
 interface UseActivityProps {
   config: ActivityConfig;
@@ -12,19 +10,28 @@ interface UseActivityProps {
 }
 
 export function useActivity({ config, onComplete, onStatusChange }: UseActivityProps) {
-  const { saveProgress, getActivityProgress } = useContext(ProgressContext);
-  const { updateCompetences } = useContext(CompetenceContext);
-  // const { adaptToUser } = useContext(AdaptationContext); // à implémenter si besoin
-
   const [progress, setProgress] = useState<ActivityProgress>(() => {
-    const saved = getActivityProgress ? getActivityProgress(config.id) : null;
-    return saved || {
+    // For now, we'll use localStorage instead of context
+    const saved = localStorage.getItem(`activity_${config.id}`);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        // If parsing fails, return default
+      }
+    }
+    return {
       activityId: config.id,
       status: ActivityStatus.NOT_STARTED,
       attempts: 0,
       data: {}
     };
   });
+
+  // Save to localStorage whenever progress changes
+  useEffect(() => {
+    localStorage.setItem(`activity_${config.id}`, JSON.stringify(progress));
+  }, [progress, config.id]);
 
   // Démarrer l'activité
   const startActivity = () => {
@@ -35,7 +42,6 @@ export function useActivity({ config, onComplete, onStatusChange }: UseActivityP
       attempts: progress.attempts + (progress.status === ActivityStatus.NOT_STARTED ? 0 : 1)
     };
     setProgress(updatedProgress);
-    if (saveProgress) saveProgress(updatedProgress);
     if (onStatusChange) onStatusChange(ActivityStatus.IN_PROGRESS);
   };
 
@@ -48,7 +54,6 @@ export function useActivity({ config, onComplete, onStatusChange }: UseActivityP
       data
     };
     setProgress(updatedProgress);
-    if (saveProgress) saveProgress(updatedProgress);
     if (onStatusChange) onStatusChange(ActivityStatus.SUBMITTED);
     return updatedProgress;
   };
@@ -63,18 +68,6 @@ export function useActivity({ config, onComplete, onStatusChange }: UseActivityP
       feedback
     };
     setProgress(updatedProgress);
-    if (saveProgress) saveProgress(updatedProgress);
-    // Mise à jour des compétences basée sur le score
-    if (updateCompetences && config.competences) {
-      const competencesUpdate = config.competences.map(id => {
-        let level = 'non-acquis';
-        if (score >= 90) level = 'maîtrisé';
-        else if (score >= 70) level = 'acquis';
-        else if (score >= 50) level = 'en-cours';
-        return { id, level };
-      });
-      updateCompetences(competencesUpdate);
-    }
     if (onStatusChange) onStatusChange(ActivityStatus.COMPLETED);
     if (onComplete) onComplete(updatedProgress);
     return updatedProgress;
@@ -90,7 +83,6 @@ export function useActivity({ config, onComplete, onStatusChange }: UseActivityP
       }
     };
     setProgress(updatedProgress);
-    if (saveProgress) saveProgress(updatedProgress);
     return updatedProgress;
   };
 

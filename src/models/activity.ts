@@ -1,12 +1,22 @@
+
 // src/models/activity.ts
-export type ActivityType = 
-  | 'quiz' 
-  | 'dragAndDrop' 
-  | 'textAnalysis'
-  | 'writing'
-  | 'interactiveReading'
-  | 'collaboration'
-  | 'evaluation';
+
+export interface Activity {
+  id: string;
+  title: string;
+  type: ActivityType;
+  config: ActivityConfig;
+  data?: any;
+}
+
+export enum ActivityType {
+  QUIZ = 'quiz',
+  TEXT_ANALYSIS = 'text_analysis',
+  AUDIO_SYNC = 'audio_sync',
+  WORD_CLOUD = 'word_cloud',
+  FORUM = 'forum',
+  WRITING = 'writing'
+}
 
 export enum ActivityStatus {
   NOT_STARTED = 'not_started',
@@ -16,47 +26,25 @@ export enum ActivityStatus {
   COMPLETED = 'completed'
 }
 
-export enum CompetenceLevel {
-  NOT_ACQUIRED = 'non-acquis',
-  IN_PROGRESS = 'en-cours',
-  ACQUIRED = 'acquis',
-  MASTERED = 'maîtrisé'
-}
-
-export interface Competence {
-  id: string;
-  name: string;
-  description: string;
-  level: CompetenceLevel;
-}
-
 export interface ActivityConfig {
   id: string;
-  type: ActivityType;
   title: string;
+  type: ActivityType;
   description: string;
   instructions: string;
-  duration: number; // En minutes
-  difficulty: 1 | 2 | 3; // 1=facile, 2=moyen, 3=difficile
-  competences: string[]; // IDs des compétences travaillées
-  prerequisiteActivities?: string[]; // Activités qui doivent être complétées avant
-  adaptative?: boolean; // Si l'activité s'adapte au niveau de l'élève
-  isOptional?: boolean;
-  resources?: {
-    id: string;
-    type: 'audio' | 'video' | 'text' | 'image';
-    url: string;
-  }[];
+  duration: number;
+  difficulty: number;
+  competences?: string[];
 }
 
 export interface ActivityProgress {
   activityId: string;
   status: ActivityStatus;
+  attempts: number;
   startedAt?: Date;
   submittedAt?: Date;
   completedAt?: Date;
-  attempts: number;
-  score?: number; // 0-100
+  score?: number;
   feedback?: string;
-  data?: any; // Données spécifiques à l'activité
+  data: any;
 }

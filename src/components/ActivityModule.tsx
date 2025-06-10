@@ -1,3 +1,4 @@
+
 // src/components/ActivityModule.tsx
 import React, { useState, useEffect } from 'react';
 import { useActivity } from '../hooks/useActivity';
@@ -72,14 +73,14 @@ export const ActivityModule: React.FC<ActivityModuleProps> = ({
       <div className="activity-header cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
         <h3>{config.title}</h3>
         <div className="activity-meta flex gap-2 items-center">
-          <Badge variant={config.difficulty === 1 ? "success" : config.difficulty === 2 ? "warning" : "danger"}>
+          <Badge variant={config.difficulty === 1 ? "default" : config.difficulty === 2 ? "secondary" : "destructive"}>
             {config.difficulty === 1 ? "Facile" : config.difficulty === 2 ? "Moyen" : "Difficile"}
           </Badge>
           <span className="duration">{config.duration} min</span>
           <Badge variant={
-            progress.status === ActivityStatus.COMPLETED ? "success" : 
-            progress.status === ActivityStatus.IN_PROGRESS ? "info" : 
-            "secondary"
+            progress.status === ActivityStatus.COMPLETED ? "default" : 
+            progress.status === ActivityStatus.IN_PROGRESS ? "secondary" : 
+            "outline"
           }>
             {progress.status === ActivityStatus.NOT_STARTED ? "À faire" : 
              progress.status === ActivityStatus.IN_PROGRESS ? "En cours" : 
@@ -109,7 +110,7 @@ export const ActivityModule: React.FC<ActivityModuleProps> = ({
                 {renderControls ? renderControls(controls) : (
                   <div className="default-controls">
                     {progress.status === ActivityStatus.IN_PROGRESS && (
-                      <Button onClick={() => handleSubmit({})} variant="primary">Soumettre</Button>
+                      <Button onClick={() => handleSubmit({})} variant="default">Soumettre</Button>
                     )}
                     {progress.status === ActivityStatus.COMPLETED && progress.score !== undefined && (
                       <div className="activity-feedback">
