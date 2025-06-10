@@ -1,135 +1,123 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { X } from 'lucide-react';
-import { useVoicePreferences } from '@/contexts/VoicePreferencesContext';
-import { VoiceInstruction } from '@/components/audio/VoiceInstruction';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useSpeech } from "@/hooks/useSpeech";
+import { Play, Pause, Volume2 } from 'lucide-react';
 
-// Props pour l'écran 1.1
 interface Screen1_1Props {
   onComplete: () => void;
   onNext: () => void;
 }
 
 const Screen1_1: React.FC<Screen1_1Props> = ({ onComplete, onNext }) => {
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [wordInput, setWordInput] = useState('');
-  const [wordCloud, setWordCloud] = useState<string[]>([]);
-  const [isInputActive, setIsInputActive] = useState(false);
-  const { voiceEnabled } = useVoicePreferences();
-  
-  // Texte de l'introduction à lire
-  const introText = "Bienvenue dans cette séquence d'apprentissage. Vous allez découvrir la chanson 'Né en 17 à Leidenstadt' de Jean-Jacques Goldman et apprendre à l'analyser pour en comprendre le sens profond. Commençons par réfléchir à ce que ce titre peut évoquer pour vous.";
-  
-  // Activer le bouton Continuer une fois la vidéo terminée
-  const handleVideoEnded = () => {
-    setVideoLoaded(true);
-    onComplete();
-  };
-  
-  // Ajouter un mot au nuage de mots
-  const handleAddWord = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (wordInput.trim() && !wordCloud.includes(wordInput.trim())) {
-      setWordCloud([...wordCloud, wordInput.trim()]);
-      setWordInput('');
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [wordCloudWords, setWordCloudWords] = useState<string[]>([]);
+  const [currentWord, setCurrentWord] = useState('');
+  const [impressions, setImpressions] = useState('');
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const { speak } = useSpeech();
+
+  const instructions = "Bienvenue dans cette séquence pédagogique sur la chanson 'Né en 17 à Leidenstadt' de Jean-Jacques Goldman. Regardez d'abord la vidéo de présentation, puis partagez vos premières impressions sur le titre.";
+
+  useEffect(() => {
+    speak(instructions);
+  }, []);
+
+  const handleAddWord = () => {
+    if (currentWord.trim() && !wordCloudWords.includes(currentWord.trim().toLowerCase())) {
+      setWordCloudWords([...wordCloudWords, currentWord.trim().toLowerCase()]);
+      setCurrentWord('');
+      
+      if (wordCloudWords.length >= 2 && impressions.length > 20) {
+        setIsCompleted(true);
+        onComplete();
+      }
     }
-  };
-  
-  // Supprimer un mot du nuage
-  const handleRemoveWord = (word: string) => {
-    setWordCloud(wordCloud.filter(w => w !== word));
   };
 
-  // Vérifier si l'écran est complété
-  useEffect(() => {
-    if (videoLoaded && wordCloud.length > 0) {
-      onComplete();
-    }
-  }, [videoLoaded, wordCloud, onComplete]);
-  
+  const handleVideoToggle = () => {
+    setVideoPlaying(!videoPlaying);
+  };
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Introduction et mise en situation</h2>
+      <h2 className="text-2xl font-semibold text-center">Introduction et mise en situation</h2>
       
-      {/* Message d'introduction */}
-      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
-        <p className="text-blue-800 flex items-start">
-          {introText}
-          {voiceEnabled && (
-            <span className="ml-2">
-              <VoiceInstruction text={introText} visuallyHidden={true} />
-            </span>
-          )}
-        </p>
-      </div>
-      
-      {/* Vidéo d'accueil - Utilisons YouTube Embed */}
-      <div className="aspect-video mb-6">
-        <iframe 
-          className="w-full h-64 rounded-lg"
-          src="https://www.youtube.com/embed/ttw1KeiF9mA?enablejsapi=1"
-          title="Présentation de la séquence"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          onLoad={() => setVideoLoaded(true)}
-        ></iframe>
-      </div>
-      
-      {/* Question d'accroche interactive */}
-      <Card className="p-4 border border-gray-200">
-        <h3 className="font-medium mb-3">Que vous évoque le titre "Né en 17 à Leidenstadt" ?</h3>
-        
-        <form onSubmit={handleAddWord} className="mb-4 flex gap-2">
-          <Input
-            type="text"
-            value={wordInput}
-            onChange={(e) => setWordInput(e.target.value)}
-            placeholder="Entrez un mot-clé..."
-            className="flex-1"
-            onFocus={() => setIsInputActive(true)}
-            onBlur={() => setIsInputActive(false)}
-          />
-          <Button type="submit" disabled={!wordInput.trim()}>
-            Ajouter
-          </Button>
-        </form>
-        
-        {/* Nuage de mots collectif */}
-        <div className="min-h-20 p-3 bg-gray-50 rounded-md">
-          {wordCloud.length === 0 ? (
-            <p className="text-gray-400 text-center">
-              {isInputActive ? "Tapez un mot et appuyez sur Ajouter" : "Ajoutez des mots-clés pour créer votre nuage de mots"}
-            </p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {wordCloud.map((word, index) => (
-                <Badge key={index} className="px-2 py-1 flex items-center gap-1">
+      {/* Video presentation */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Play className="h-5 w-5" />
+            Présentation de la séquence
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="aspect-video rounded-md overflow-hidden bg-gray-100 relative mb-4">
+            <video
+              src="/Comprendre la chanson _Né en 17 à Leidenstadt_.mp4"
+              controls
+              className="w-full h-full object-cover"
+              poster="/leidenstadt_accueil.jpg"
+              onPlay={() => setVideoPlaying(true)}
+              onPause={() => setVideoPlaying(false)}
+            >
+              Votre navigateur ne supporte pas la lecture vidéo.
+            </video>
+          </div>
+          <p className="text-sm text-gray-600">
+            Regardez cette présentation pour comprendre les objectifs de notre séquence d'apprentissage.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Word cloud activity */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Nuage de mots</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="font-medium">Que vous évoque le titre "Né en 17 à Leidenstadt" ?</p>
+          
+          <div className="flex gap-2">
+            <Input
+              placeholder="Tapez un mot-clé..."
+              value={currentWord}
+              onChange={(e) => setCurrentWord(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleAddWord()}
+            />
+            <Button onClick={handleAddWord} disabled={!currentWord.trim()}>
+              Ajouter
+            </Button>
+          </div>
+
+          {wordCloudWords.length > 0 && (
+            <div className="flex flex-wrap gap-2 p-4 bg-blue-50 rounded-lg">
+              {wordCloudWords.map((word, index) => (
+                <Badge key={index} variant="secondary" className="text-sm">
                   {word}
-                  <button 
-                    onClick={() => handleRemoveWord(word)}
-                    className="ml-1 text-gray-500 hover:text-gray-700"
-                    aria-label={`Supprimer ${word}`}
-                  >
-                    <X size={12} />
-                  </button>
                 </Badge>
               ))}
             </div>
           )}
-        </div>
+
+          <div className="space-y-2">
+            <label className="font-medium">Notez vos premières impressions :</label>
+            <Textarea
+              placeholder="Qu'est-ce que ce titre vous inspire ? Quelles images ou émotions vous viennent à l'esprit ?"
+              value={impressions}
+              onChange={(e) => setImpressions(e.target.value)}
+              className="min-h-20"
+            />
+          </div>
+        </CardContent>
       </Card>
       
-      {/* Bouton pour commencer la découverte */}
       <div className="flex justify-end">
-        <Button 
-          onClick={onNext}
-          size="lg"
-          disabled={!videoLoaded || wordCloud.length === 0}
-        >
+        <Button onClick={onNext} disabled={!isCompleted}>
           Commencer la découverte
         </Button>
       </div>

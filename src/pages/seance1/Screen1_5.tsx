@@ -1,6 +1,6 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle, Play, Pause, SkipBack, SkipForward, Info } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -209,7 +209,7 @@ export default function Screen1_5({ onComplete, onNext, onPrevious }: Screen1_5P
       <div className="flex flex-col gap-4">
         <audio 
           ref={audioRef}
-          src="https://example.com/ne-en-17-a-leidenstadt.mp3" 
+          src="/Ne-en-17-a-Leidenstadt.mp3" 
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onEnded={() => setIsPlaying(false)}

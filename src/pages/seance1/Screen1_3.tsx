@@ -1,313 +1,231 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Check, X, Plus } from 'lucide-react';
-import { useVoicePreferences } from '@/contexts/VoicePreferencesContext';
-import { VoiceInstruction } from '@/components/audio/VoiceInstruction';
+import { useSpeech } from "@/hooks/useSpeech";
+import { CheckCircle, AlertCircle, Music, Users, Heart } from 'lucide-react';
 
-// Props pour l'écran 1.3
 interface Screen1_3Props {
   onComplete: () => void;
   onNext: () => void;
   onPrevious: () => void;
 }
 
-// Données des émotions disponibles
-const emotions = [
-  { id: 'tristesse', label: 'Tristesse', icon: '😢' },
-  { id: 'melancolie', label: 'Mélancolie', icon: '😔' },
-  { id: 'colere', label: 'Colère', icon: '😠' },
-  { id: 'espoir', label: 'Espoir', icon: '🌱' },
-  { id: 'empathie', label: 'Empathie', icon: '🤗' },
-  { id: 'reflexion', label: 'Réflexion', icon: '🤔' },
-  { id: 'impuissance', label: 'Impuissance', icon: '😟' },
-  { id: 'compassion', label: 'Compassion', icon: '💗' },
-  { id: 'culpabilite', label: 'Culpabilité', icon: '😓' },
-  { id: 'indignation', label: 'Indignation', icon: '😤' },
-  { id: 'autre', label: 'Autre...', icon: '✏️' },
-];
-
-// Thèmes possibles pour le QCM
-const themes = [
-  "L'identité et les origines",
-  "Le hasard et le destin",
-  "La guerre et ses conséquences",
-  "La responsabilité collective",
-  "La transmission de la mémoire",
-  "Le multiculturalisme",
-];
-
-// Époques possibles pour le QCM
-const epoques = [
-  "La Première Guerre mondiale (1914-1918)",
-  "L'entre-deux-guerres (1918-1939)",
-  "La Seconde Guerre mondiale (1939-1945)",
-  "La Guerre froide (1947-1991)",
-  "L'époque contemporaine (après 1991)",
-];
-
 const Screen1_3: React.FC<Screen1_3Props> = ({ onComplete, onNext, onPrevious }) => {
-  // États pour les différentes sections
-  const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
-  const [customEmotion, setCustomEmotion] = useState('');
-  const [themeSelectionne, setThemeSelectionne] = useState<string | null>(null);
-  const [epoqueSelectionnee, setEpoqueSelectionnee] = useState<string | null>(null);
-  const [motCle, setMotCle] = useState('');
-  const [nuageDeMots, setNuageDeMots] = useState<string[]>([]);
-  const { voiceEnabled } = useVoicePreferences();
-  
-  // Texte de consigne
-  const consigneText = "Maintenant que vous avez écouté la chanson, partagez vos impressions en sélectionnant les émotions ressenties et en répondant aux questions.";
-  
-  // Vérifier si toutes les sections sont complétées
-  const isComplete = () => {
-    return (
-      selectedEmotions.length > 0 && 
-      themeSelectionne !== null && 
-      epoqueSelectionnee !== null && 
-      nuageDeMots.length >= 3
-    );
-  };
-  
-  // Mettre à jour l'état de complétion
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [currentSection, setCurrentSection] = useState(0);
+  const [responses, setResponses] = useState<{[key: string]: string}>({});
+  const [reflection, setReflection] = useState('');
+  const { speak } = useSpeech();
+
+  const instructions = "Approfondissons votre compréhension de la chanson à travers une analyse guidée. Répondez aux questions pour structurer votre réflexion sur l'œuvre.";
+
   useEffect(() => {
-    if (isComplete()) {
+    speak(instructions);
+  }, []);
+
+  const analysisQuestions = [
+    {
+      id: 'theme',
+      title: 'Thème principal',
+      icon: <Heart className="h-5 w-5" />,
+      question: 'Quel est selon vous le thème principal de cette chanson ?',
+      options: [
+        'Le destin et les circonstances de la vie',
+        'La guerre et ses conséquences',
+        'L\'amour et les relations humaines',
+        'La jeunesse et l\'adolescence'
+      ]
+    },
+    {
+      id: 'emotion',
+      title: 'Émotion dominante',
+      icon: <Music className="h-5 w-5" />,
+      question: 'Quelle émotion prédomine dans cette chanson ?',
+      options: [
+        'La mélancolie et la nostalgie',
+        'La colère et la révolte',
+        'L\'espoir et l\'optimisme',
+        'La peur et l\'angoisse'
+      ]
+    },
+    {
+      id: 'message',
+      title: 'Message de l\'artiste',
+      icon: <Users className="h-5 w-5" />,
+      question: 'Quel message Jean-Jacques Goldman cherche-t-il à transmettre ?',
+      options: [
+        'L\'importance de la solidarité humaine',
+        'La critique des conflits armés',
+        'La réflexion sur les hasards de l\'existence',
+        'L\'appel à la paix mondiale'
+      ]
+    }
+  ];
+
+  const handleResponseChange = (questionId: string, value: string) => {
+    const newResponses = { ...responses, [questionId]: value };
+    setResponses(newResponses);
+    
+    // Check if all questions are answered and reflection is written
+    if (Object.keys(newResponses).length === analysisQuestions.length && reflection.length > 30) {
+      setIsCompleted(true);
       onComplete();
     }
-  }, [selectedEmotions, themeSelectionne, epoqueSelectionnee, nuageDeMots, onComplete]);
-  
-  // Gérer l'ajout/suppression d'émotions
-  const toggleEmotion = (emotionId: string) => {
-    if (selectedEmotions.includes(emotionId)) {
-      setSelectedEmotions(selectedEmotions.filter(id => id !== emotionId));
-    } else {
-      setSelectedEmotions([...selectedEmotions, emotionId]);
+  };
+
+  const handleReflectionChange = (value: string) => {
+    setReflection(value);
+    
+    // Check if all questions are answered and reflection is written
+    if (Object.keys(responses).length === analysisQuestions.length && value.length > 30) {
+      setIsCompleted(true);
+      onComplete();
     }
   };
-  
-  // Ajouter une émotion personnalisée
-  const addCustomEmotion = () => {
-    if (customEmotion.trim() && !selectedEmotions.includes('custom:' + customEmotion.trim())) {
-      setSelectedEmotions([...selectedEmotions, 'custom:' + customEmotion.trim()]);
-      setCustomEmotion('');
+
+  const nextSection = () => {
+    if (currentSection < analysisQuestions.length) {
+      setCurrentSection(currentSection + 1);
     }
   };
-  
-  // Ajouter un mot-clé au nuage de mots
-  const ajouterMotCle = () => {
-    if (motCle.trim() && !nuageDeMots.includes(motCle.trim())) {
-      setNuageDeMots([...nuageDeMots, motCle.trim()]);
-      setMotCle('');
+
+  const previousSection = () => {
+    if (currentSection > 0) {
+      setCurrentSection(currentSection - 1);
     }
   };
-  
-  // Supprimer un mot-clé du nuage
-  const supprimerMotCle = (mot: string) => {
-    setNuageDeMots(nuageDeMots.filter(m => m !== mot));
-  };
-  
-  // Afficher une émotion (standard ou personnalisée)
-  const renderEmotion = (emotionId: string) => {
-    if (emotionId.startsWith('custom:')) {
-      const customLabel = emotionId.substring(7);
-      return (
-        <Badge key={emotionId} className="py-2 px-3 flex items-center gap-1">
-          ✏️ {customLabel}
-          <button
-            onClick={() => toggleEmotion(emotionId)}
-            className="ml-2 text-gray-500 hover:text-red-500"
-          >
-            <X size={14} />
-          </button>
-        </Badge>
-      );
-    } else {
-      const emotion = emotions.find(e => e.id === emotionId);
-      if (!emotion) return null;
-      return (
-        <Badge key={emotionId} className="py-2 px-3 flex items-center gap-1">
-          {emotion.icon} {emotion.label}
-          <button
-            onClick={() => toggleEmotion(emotionId)}
-            className="ml-2 text-gray-500 hover:text-red-500"
-          >
-            <X size={14} />
-          </button>
-        </Badge>
-      );
-    }
-  };
-  
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Recueil des impressions</h2>
-      
-      {/* Message de consigne */}
-      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-        <p className="text-blue-800 flex items-start">
-          {consigneText}
-          {voiceEnabled && (
-            <span className="ml-2">
-              <VoiceInstruction text={consigneText} visuallyHidden={true} />
-            </span>
-          )}
-        </p>
+      <div className="text-center">
+        <h2 className="text-2xl font-semibold">Analyse guidée de la chanson</h2>
+        <p className="text-gray-600 mt-2">Approfondissons votre compréhension de l'œuvre</p>
       </div>
       
-      {/* Sélection des émotions */}
-      <Card className="p-4 border border-gray-200">
-        <h3 className="font-medium mb-3">Quelles émotions avez-vous ressenties en écoutant cette chanson ?</h3>
-        
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
-          {emotions.filter(e => e.id !== 'autre').map(emotion => (
-            <Button
-              key={emotion.id}
-              variant={selectedEmotions.includes(emotion.id) ? "default" : "outline"}
-              className={`justify-start ${selectedEmotions.includes(emotion.id) ? "bg-blue-100 text-blue-800 hover:bg-blue-200" : ""}`}
-              onClick={() => toggleEmotion(emotion.id)}
-            >
-              <span className="mr-2">{emotion.icon}</span>
-              {emotion.label}
-              {selectedEmotions.includes(emotion.id) && (
-                <Check size={16} className="ml-auto" />
-              )}
-            </Button>
-          ))}
-        </div>
-        
-        {/* Ajout d'émotions personnalisées */}
-        <div className="flex gap-2 mb-4">
-          <Input
-            type="text"
-            placeholder="Autre émotion..."
-            value={customEmotion}
-            onChange={(e) => setCustomEmotion(e.target.value)}
-            className="flex-1"
+      {/* Progress indicator */}
+      <div className="flex justify-center space-x-2">
+        {analysisQuestions.map((_, index) => (
+          <div
+            key={index}
+            className={`w-3 h-3 rounded-full ${
+              index <= currentSection ? 'bg-blue-500' : 'bg-gray-300'
+            }`}
           />
-          <Button
-            variant="outline"
-            onClick={addCustomEmotion}
-            disabled={!customEmotion.trim()}
-          >
-            <Plus size={16} className="mr-1" /> Ajouter
-          </Button>
-        </div>
-        
-        {/* Affichage des émotions sélectionnées */}
-        {selectedEmotions.length > 0 ? (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {selectedEmotions.map(emotionId => renderEmotion(emotionId))}
-          </div>
-        ) : (
-          <p className="text-sm text-gray-500 italic">Veuillez sélectionner au moins une émotion.</p>
-        )}
-      </Card>
-      
-      {/* Questionnaire à choix multiples - Thème */}
-      <Card className="p-4 border border-gray-200">
-        <h3 className="font-medium mb-3">Quel est selon vous le thème principal de cette chanson ?</h3>
-        
-        <RadioGroup
-          value={themeSelectionne || ""}
-          onValueChange={setThemeSelectionne}
-          className="space-y-2"
-        >
-          {themes.map(theme => (
-            <div key={theme} className="flex items-center space-x-2">
-              <RadioGroupItem value={theme} id={`theme-${theme}`} />
-              <Label htmlFor={`theme-${theme}`}>{theme}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </Card>
-      
-      {/* Questionnaire à choix multiples - Époque */}
-      <Card className="p-4 border border-gray-200">
-        <h3 className="font-medium mb-3">À quelle époque fait référence le titre ?</h3>
-        
-        <RadioGroup
-          value={epoqueSelectionnee || ""}
-          onValueChange={setEpoqueSelectionnee}
-          className="space-y-2"
-        >
-          {epoques.map(epoque => (
-            <div key={epoque} className="flex items-center space-x-2">
-              <RadioGroupItem value={epoque} id={`epoque-${epoque}`} />
-              <Label htmlFor={`epoque-${epoque}`}>{epoque}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </Card>
-      
-      {/* Nuage de mots collaboratif */}
-      <Card className="p-4 border border-gray-200">
-        <h3 className="font-medium mb-3">Proposez des mots-clés qui vous viennent à l'esprit</h3>
-        
-        <div className="flex gap-2 mb-4">
-          <Input
-            type="text"
-            placeholder="Entrez un mot-clé..."
-            value={motCle}
-            onChange={(e) => setMotCle(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && ajouterMotCle()}
-            className="flex-1"
-          />
-          <Button
-            onClick={ajouterMotCle}
-            disabled={!motCle.trim()}
-          >
-            Ajouter
-          </Button>
-        </div>
-        
-        <div className="min-h-20 p-3 bg-gray-50 rounded-md">
-          {nuageDeMots.length === 0 ? (
-            <p className="text-gray-400 text-center">
-              Proposez au moins 3 mots-clés pour créer votre nuage de mots
+        ))}
+        <div
+          className={`w-3 h-3 rounded-full ${
+            currentSection === analysisQuestions.length ? 'bg-blue-500' : 'bg-gray-300'
+          }`}
+        />
+      </div>
+
+      {currentSection < analysisQuestions.length ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              {analysisQuestions[currentSection].icon}
+              {analysisQuestions[currentSection].title}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="font-medium">
+              {analysisQuestions[currentSection].question}
             </p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {nuageDeMots.map((mot, index) => (
-                <Badge 
-                  key={index} 
-                  className="px-3 py-1 flex items-center gap-1 text-md"
-                  style={{ fontSize: `${Math.max(1, (Math.random() * 0.5) + 0.8)}rem` }}
-                >
-                  {mot}
-                  <button
-                    onClick={() => supprimerMotCle(mot)}
-                    className="ml-1 text-gray-500 hover:text-red-500"
-                  >
-                    <X size={12} />
-                  </button>
-                </Badge>
+            
+            <RadioGroup 
+              value={responses[analysisQuestions[currentSection].id] || ''}
+              onValueChange={(value) => handleResponseChange(analysisQuestions[currentSection].id, value)}
+            >
+              {analysisQuestions[currentSection].options.map((option, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <RadioGroupItem value={option} id={`option-${index}`} />
+                  <Label htmlFor={`option-${index}`} className="cursor-pointer">
+                    {option}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+            
+            <div className="flex justify-between pt-4">
+              <Button 
+                variant="outline" 
+                onClick={previousSection}
+                disabled={currentSection === 0}
+              >
+                Précédent
+              </Button>
+              <Button 
+                onClick={nextSection}
+                disabled={!responses[analysisQuestions[currentSection].id]}
+              >
+                Suivant
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5" />
+              Synthèse personnelle
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="font-medium">
+              En vous basant sur vos réponses, rédigez une courte synthèse de votre compréhension de la chanson :
+            </p>
+            
+            {/* Summary of responses */}
+            <div className="bg-blue-50 p-4 rounded-lg space-y-2">
+              <h4 className="font-semibold text-blue-800">Vos réponses :</h4>
+              {analysisQuestions.map((question) => (
+                <div key={question.id} className="text-sm">
+                  <strong>{question.title}:</strong> {responses[question.id]}
+                </div>
               ))}
             </div>
-          )}
-        </div>
-        <p className="text-sm text-gray-500 mt-2">
-          {nuageDeMots.length < 3 ? 
-            `Encore ${3 - nuageDeMots.length} mot(s) minimum à ajouter...` : 
-            "Vous pouvez continuer à ajouter des mots-clés ou passer à la suite."
-          }
-        </p>
-      </Card>
+            
+            <Textarea
+              placeholder="Rédigez votre synthèse personnelle en quelques phrases. Expliquez ce que cette chanson représente pour vous et comment vos réponses s'articulent pour former une vision cohérente de l'œuvre..."
+              value={reflection}
+              onChange={(e) => handleReflectionChange(e.target.value)}
+              className="min-h-24"
+            />
+            
+            <div className="text-sm text-gray-500">
+              {reflection.length} caractères - 
+              {reflection.length < 30 ? " Développez votre réflexion (minimum 30 caractères)" : " Parfait !"}
+            </div>
+            
+            <div className="flex justify-between pt-4">
+              <Button variant="outline" onClick={previousSection}>
+                Précédent
+              </Button>
+              <div className="text-sm text-green-600 flex items-center gap-1">
+                {isCompleted && (
+                  <>
+                    <CheckCircle className="h-4 w-4" />
+                    Analyse terminée !
+                  </>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       
-      {/* Navigation */}
       <div className="flex justify-between">
         <Button variant="outline" onClick={onPrevious}>
           Retour
         </Button>
-        <Button 
-          onClick={onNext}
-          disabled={!isComplete()}
-        >
-          Continuer
+        <Button onClick={onNext} disabled={!isCompleted}>
+          Analyser la structure musicale
         </Button>
       </div>
     </div>

@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import { AlertCircle, Pause, Play } from 'lucide-react';
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useVoicePreferences } from '@/contexts/VoicePreferencesContext';
-import { VoiceInstruction } from '@/components/audio/VoiceInstruction';
-import { YouTubeEmbed } from '@/components/YouTube';
 
-// Props pour l'écran 1.2
+import React, { useState, useEffect, useRef } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { useSpeech } from "@/hooks/useSpeech";
+import { Play, Pause, SkipBack, SkipForward, Volume2 } from 'lucide-react';
+
 interface Screen1_2Props {
   onComplete: () => void;
   onNext: () => void;
@@ -16,101 +15,165 @@ interface Screen1_2Props {
 }
 
 const Screen1_2: React.FC<Screen1_2Props> = ({ onComplete, onNext, onPrevious }) => {
+  const [isCompleted, setIsCompleted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [hasListened, setHasListened] = useState(false);
-  const [journalContent, setJournalContent] = useState('');
-  const [showLyricsAttempt, setShowLyricsAttempt] = useState(false);
-  const { voiceEnabled } = useVoicePreferences();
-  
-  // Texte de consigne
-  const consigneText = "Écoutez attentivement cette chanson sans lire les paroles. Notez vos premières impressions dans le journal de bord ci-dessous.";
-  
-  // ID réelle de la vidéo YouTube de la chanson "Né en 17 à Leidenstadt"
-  const youtubeVideoId = "ttw1KeiF9mA";
-  
-  // Fonction pour gérer la fin de la vidéo
-  const handleVideoEnded = () => {
-    setIsPlaying(false);
-    setHasListened(true);
-  };
-  
-  // Vérifier si l'écran est complété
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [listeningComplete, setListeningComplete] = useState(false);
+  const [journalEntry, setJournalEntry] = useState('');
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const { speak } = useSpeech();
+
+  const instructions = "Écoutez attentivement la chanson dans son intégralité pour une première découverte. Notez vos impressions, émotions et questions qui vous viennent à l'esprit pendant l'écoute.";
+
   useEffect(() => {
-    if (hasListened && journalContent.length >= 50) {
+    speak(instructions);
+  }, []);
+
+  const handlePlayPause = () => {
+    if (!audioRef.current) return;
+    
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleTimeUpdate = () => {
+    if (!audioRef.current) return;
+    
+    const currentTime = audioRef.current.currentTime;
+    setCurrentTime(currentTime);
+    
+    // Mark listening as complete when 80% of the song is heard
+    if (currentTime > duration * 0.8 && !listeningComplete) {
+      setListeningComplete(true);
+      speak("Vous avez écouté la majorité de la chanson. Vous pouvez maintenant noter vos impressions.");
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (!audioRef.current) return;
+    setDuration(audioRef.current.duration);
+  };
+
+  const handleJournalChange = (value: string) => {
+    setJournalEntry(value);
+    if (value.length > 50 && listeningComplete) {
+      setIsCompleted(true);
       onComplete();
     }
-  }, [hasListened, journalContent, onComplete]);
-  
+  };
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Première écoute</h2>
+      <h2 className="text-2xl font-semibold text-center">Première écoute de découverte</h2>
       
-      {/* Message de consigne */}
-      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-        <p className="text-blue-800 flex items-start">
-          {consigneText}
-          {voiceEnabled && (
-            <span className="ml-2">
-              <VoiceInstruction text={consigneText} visuallyHidden={true} />
-            </span>
-          )}
-        </p>
-      </div>
-      
-      {/* Lecteur vidéo YouTube */}
-      <div className="aspect-video relative">
-        <YouTubeEmbed videoId={youtubeVideoId} title="Jean-Jacques Goldman - Né en 17 à Leidenstadt" onEnd={handleVideoEnded} />
-      </div>
-      
-      {/* Alerte si tentative d'afficher les paroles */}
-      {showLyricsAttempt && (
-        <Alert variant="destructive" className="mb-4">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Pour cette première découverte, veuillez écouter la chanson sans lire les paroles. Vous pourrez y accéder plus tard.
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      {/* Bouton (désactivé) pour afficher les paroles */}
-      <div className="flex justify-center">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="mb-4"
-          onClick={() => setShowLyricsAttempt(true)}
-        >
-          Afficher les paroles
-        </Button>
-      </div>
-      
-      {/* Journal de bord numérique */}
-      <Card className="p-4 border border-gray-200">
-        <h3 className="font-medium mb-3">Journal de bord</h3>
-        <Textarea
-          placeholder="Notez vos premières impressions, les émotions ressenties, les thèmes que vous percevez..."
-          className="min-h-32"
-          value={journalContent}
-          onChange={(e) => setJournalContent(e.target.value)}
-        />
-        <p className="text-sm text-gray-500 mt-2">
-          {journalContent.length < 50 ? 
-            `Encore ${50 - journalContent.length} caractères minimum...` : 
-            "Vous pouvez continuer à enrichir vos impressions ou passer à la suite."
-          }
-        </p>
+      {/* Audio player */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Volume2 className="h-5 w-5" />
+            "Né en 17 à Leidenstadt" - Jean-Jacques Goldman
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <audio 
+            ref={audioRef}
+            src="/Ne-en-17-a-Leidenstadt.mp3"
+            onTimeUpdate={handleTimeUpdate}
+            onLoadedMetadata={handleLoadedMetadata}
+            onEnded={() => {
+              setIsPlaying(false);
+              setListeningComplete(true);
+            }}
+          />
+          
+          <div className="space-y-4">
+            <div className="w-full">
+              <div className="flex justify-between text-sm mb-1">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
+              </div>
+              <Progress value={(currentTime / duration) * 100} className="w-full" />
+            </div>
+            
+            <div className="flex gap-4 justify-center">
+              <Button variant="outline" onClick={() => {
+                if (audioRef.current) {
+                  audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 10);
+                }
+              }}>
+                <SkipBack className="h-4 w-4" />
+              </Button>
+              <Button onClick={handlePlayPause} size="lg">
+                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+              </Button>
+              <Button variant="outline" onClick={() => {
+                if (audioRef.current) {
+                  audioRef.current.currentTime = Math.min(duration, audioRef.current.currentTime + 10);
+                }
+              }}>
+                <SkipForward className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            {listeningComplete && (
+              <div className="text-center">
+                <Badge variant="outline" className="bg-green-50 text-green-700">
+                  Écoute terminée !
+                </Badge>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Journal entry */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Journal d'écoute</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-gray-600">
+            Notez vos premières impressions, émotions, questions ou réflexions suscitées par cette première écoute :
+          </p>
+          
+          <Textarea
+            placeholder="• Quelles émotions cette chanson évoque-t-elle ?
+• Quels mots ou phrases vous ont marqué ?
+• Quelle atmosphère se dégage de cette chanson ?
+• Quelles questions vous posez-vous sur le sens du texte ?"
+            value={journalEntry}
+            onChange={(e) => handleJournalChange(e.target.value)}
+            className="min-h-32"
+            disabled={!listeningComplete}
+          />
+          
+          <div className="text-sm text-gray-500">
+            {journalEntry.length > 0 && (
+              <span>{journalEntry.length} caractères - </span>
+            )}
+            {!listeningComplete ? "Écoutez d'abord la chanson pour débloquer la saisie" : 
+             journalEntry.length < 50 ? "Développez vos impressions (minimum 50 caractères)" : "Parfait !"}
+          </div>
+        </CardContent>
       </Card>
       
-      {/* Navigation */}
       <div className="flex justify-between">
         <Button variant="outline" onClick={onPrevious}>
           Retour
         </Button>
-        <Button 
-          onClick={onNext}
-          disabled={!hasListened || journalContent.length < 50}
-        >
-          Continuer
+        <Button onClick={onNext} disabled={!isCompleted}>
+          Continuer vers l'analyse
         </Button>
       </div>
     </div>

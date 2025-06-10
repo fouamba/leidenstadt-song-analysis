@@ -114,7 +114,7 @@ export default function Screen1_4({ onComplete, onNext, onPrevious }: Screen1_4P
     {
       question: "Quel est le rôle du pont musical dans la chanson ?",
       options: [
-        "Introduire un nouveau thème musical", "Créer une rupture et relancer l’attention", "Servir de transition vers le refrain final", "Mettre en avant un solo d’instrument"
+        "Introduire un nouveau thème musical", "Créer une rupture et relancer l’attention", "Servir de transition vers le refrain final", "Mettre en avant un solo d'instrument"
       ],
       correctAnswer: "Créer une rupture et relancer l’attention"
     },
@@ -222,7 +222,7 @@ export default function Screen1_4({ onComplete, onNext, onPrevious }: Screen1_4P
       <div className="flex flex-col gap-4 items-center">
         <audio 
           ref={audioRef}
-          src="/ne-en-17-a-leidenstadt.mp3" 
+          src="/Ne-en-17-a-Leidenstadt.mp3" 
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onEnded={() => setIsPlaying(false)}
