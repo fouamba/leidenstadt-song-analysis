@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, SkipForward, SkipBack, CheckCircle, AlertCircle, BookOpen, PenTool, Award, BarChart3, Volume2, Eye, EyeOff } from 'lucide-react';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,10 +26,10 @@ const Seance2 = () => {
   const navigation = {
     next: () => setCurrentScreen(prev => Math.min(prev + 1, 9)),
     prev: () => setCurrentScreen(prev => Math.max(prev - 1, 1)),
-    goTo: (screen) => setCurrentScreen(screen)
+    goTo: (screen: number) => setCurrentScreen(screen)
   };
 
-  const markCompleted = (screen, score = 100) => {
+  const markCompleted = (screen: number, score = 100) => {
     setUserProgress(prev => ({
       ...prev,
       [`screen${screen}`]: { completed: true, score }
@@ -38,7 +38,7 @@ const Seance2 = () => {
 
   // Écran 2.1 : Activation des connaissances
   const Screen1 = () => {
-    const [quizAnswers, setQuizAnswers] = useState({});
+    const [quizAnswers, setQuizAnswers] = useState<{[key: number]: number}>({});
     const [showResults, setShowResults] = useState(false);
 
     const questions = [
@@ -144,8 +144,8 @@ const Seance2 = () => {
 
   // Écran 2.2 : Exploration ciblée
   const Screen2 = () => {
-    const [selectedAnswer, setSelectedAnswer] = useState('');
-    const [audioRef] = useState(React.createRef());
+    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+    const audioRef = useRef<HTMLAudioElement>(null);
 
     const lyrics = `Si j'étais né en 17 à Leidenstadt
 Sur les ruines d'un champ de bataille
@@ -243,22 +243,22 @@ Que ce garçon né dans un lit de satin...`;
                           type="radio"
                           name="structure"
                           value={index}
-                          onChange={(e) => setSelectedAnswer(e.target.value)}
+                          onChange={(e) => setSelectedAnswer(parseInt(e.target.value))}
                           className="mr-3"
                         />
                         <span className="text-gray-700">{option}</span>
                       </label>
                     ))}
 
-                    {selectedAnswer !== '' && (
-                      <Card className={`mt-4 p-4 ${selectedAnswer == question.correct ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border`}>
+                    {selectedAnswer !== null && (
+                      <Card className={`mt-4 p-4 ${selectedAnswer === question.correct ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border`}>
                         <div className="flex items-center mb-2">
-                          {selectedAnswer == question.correct ? 
+                          {selectedAnswer === question.correct ? 
                             <CheckCircle className="w-5 h-5 text-green-600 mr-2" /> : 
                             <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
                           }
                           <span className="font-semibold">
-                            {selectedAnswer == question.correct ? 'Correct !' : 'Incorrect'}
+                            {selectedAnswer === question.correct ? 'Correct !' : 'Incorrect'}
                           </span>
                         </div>
                         <p className="text-sm text-gray-700">{question.explanation}</p>
@@ -267,7 +267,7 @@ Que ce garçon né dans un lit de satin...`;
                   </CardContent>
                 </Card>
 
-                {selectedAnswer == question.correct && (
+                {selectedAnswer === question.correct && (
                   <Button
                     onClick={() => {
                       markCompleted(2);
@@ -340,12 +340,12 @@ Que ce garçon né dans un lit de satin...`;
   );
 
   // Écrans simplifiés pour compléter la séance
-  const SimpleScreen = ({ screenNum, title, description, icon: Icon, bgColor = "blue" }) => (
+  const SimpleScreen = ({ screenNum, title, description, icon: React.ElementType, bgColor = "blue" }) => (
     <div className="container mx-auto p-6">
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Icon className={`w-6 h-6 text-${bgColor}-600`} />
+            <icon className={`w-6 h-6 text-${bgColor}-600`} />
             {title}
           </CardTitle>
         </CardHeader>

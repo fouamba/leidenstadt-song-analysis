@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -81,13 +82,13 @@ const Seance3 = () => {
     </Card>
   );
 
-  const screens = {
-    1: { id: 1, component: <Screen1 /> },
-    2: { id: 2, component: <Screen2 /> },
-    3: { id: 3, component: <Screen3 /> },
-    4: { id: 4, component: <Screen4 /> },
-    5: { id: 5, component: <Screen5 /> },
-  };
+  const screens = [
+    { id: 1, component: <Screen1 /> },
+    { id: 2, component: <Screen2 /> },
+    { id: 3, component: <Screen3 /> },
+    { id: 4, component: <Screen4 /> },
+    { id: 5, component: <Screen5 /> },
+  ];
 
   const progressPercentage = (currentScreen / TOTAL_SCREENS) * 100;
 
