@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, SkipForward, SkipBack, CheckCircle, AlertCircle, BookOpen, PenTool, Award, BarChart3, Volume2, Eye, EyeOff } from 'lucide-react';
 import { PageLayout } from '@/components/layout/PageLayout';
