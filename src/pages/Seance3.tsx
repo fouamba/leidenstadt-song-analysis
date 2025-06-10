@@ -1,211 +1,113 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import {
-  Play,
-  Pause,
-  ChevronLeft,
-  ChevronRight,
-  Award,
-  Lightbulb,
-  Users,
-  BookOpen,
-  Check,
-  X,
-  Star,
-  Shuffle,
-  Edit3,
-  MessageCircle,
-  BarChart3,
-  Eye,
-  Volume2,
-  Video,
-  HelpCircle,
-  FileText
-} from 'lucide-react';
+import { PageLayout } from '@/components/layout/PageLayout';
 
-// === Début du composant principal Séance 3 ===
-const Seance3Conditionnel = () => {
-  const [currentScreen, setCurrentScreen] = useState(0);
-  const [userResponses, setUserResponses] = useState(Array(4).fill(''));
-  const [score, setScore] = useState(0);
-  const [showResults, setShowResults] = useState(false);
-  const [timer, setTimer] = useState(30);
-  const [isPaused, setIsPaused] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+const Seance3 = () => {
+  const [currentScreen, setCurrentScreen] = useState(1);
+  const TOTAL_SCREENS = 5; // Exemple de nombre total d'écrans
 
-  const handleRestart = () => {
-    setCurrentScreen(0);
-    setUserResponses(Array(4).fill(''));
-    setScore(0);
-    setShowResults(false);
-    setTimer(30);
-    setIsPaused(false);
-  };
-
-  const screens = [
-    {
-      id: 1,
-      content: (
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">Bienvenue dans la Séance 3</h2>
-          <p>
-            Dans cette séance, nous allons explorer le conditionnel en français. Êtes-vous prêt
-            à commencer?
-          </p>
-        </div>
-      )
-    },
-    {
-      id: 2,
-      content: (
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">Le Conditionnel Présent</h2>
-          <p>
-            Le conditionnel présent est utilisé pour exprimer un fait qui pourrait se produire
-            sous certaines conditions. Par exemple, "Si j'avais de l'argent, je voyagerais
-            autour du monde."
-          </p>
-        </div>
-      )
-    },
-    {
-      id: 3,
-      content: (
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">Exercice 1</h2>
-          <p>Complétez la phrase avec la bonne forme du verbe au conditionnel:</p>
-          <p>
-            Si j'étais riche, je {''}
-            <Input
-              value={userResponses[0]}
-              onChange={(e) => handleResponseChange(e, 0)}
-              placeholder="verbe au conditionnel"
-            />
-            autour du monde.
-          </p>
-        </div>
-      )
-    },
-    {
-      id: 4,
-      content: (
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">Résultats</h2>
-          <p>Votre score: {score} / 1</p>
-          <Button onClick={handleRestart}>Recommencer</Button>
-        </div>
-      )
-    }
-  ];
-
-  const handleResponseChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newResponses = [...userResponses];
-    newResponses[index] = e.target.value;
-    setUserResponses(newResponses);
-  };
-
-  const handleNextScreen = () => {
-    if (currentScreen < screens.length - 1) {
+  const nextScreen = () => {
+    if (currentScreen < TOTAL_SCREENS) {
       setCurrentScreen(currentScreen + 1);
     }
   };
 
-  const handlePrevScreen = () => {
-    if (currentScreen > 0) {
+  const prevScreen = () => {
+    if (currentScreen > 1) {
       setCurrentScreen(currentScreen - 1);
     }
   };
 
-  const handleSubmit = () => {
-    // Logique de soumission des réponses
-    const calculatedScore = userResponses.filter((response) => response !== '').length;
-    setScore(calculatedScore);
-    setShowResults(true);
+  // Définition des écrans (composants)
+  const Screen1 = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>Introduction au Conditionnel</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Le conditionnel est utilisé pour exprimer des hypothèses, des souhaits ou des actions qui dépendent d'une condition.</p>
+        <Button onClick={nextScreen}>Suivant</Button>
+      </CardContent>
+    </Card>
+  );
+
+  const Screen2 = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>Formes du Conditionnel</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Explorez les différentes formes du conditionnel : présent et passé.</p>
+        <Button onClick={nextScreen}>Suivant</Button>
+      </CardContent>
+    </Card>
+  );
+
+  const Screen3 = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>Exercice : Identification</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Identifiez les phrases au conditionnel dans le texte.</p>
+        <Button onClick={nextScreen}>Suivant</Button>
+      </CardContent>
+    </Card>
+  );
+
+  const Screen4 = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>Atelier d'écriture</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Écrivez un court paragraphe en utilisant le conditionnel.</p>
+        <Button onClick={nextScreen}>Suivant</Button>
+      </CardContent>
+    </Card>
+  );
+
+  const Screen5 = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>Conclusion</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Récapitulation des concepts clés du conditionnel.</p>
+        <Button onClick={() => setCurrentScreen(1)}>Recommencer</Button>
+      </CardContent>
+    </Card>
+  );
+
+  const screens = {
+    1: { id: 1, component: <Screen1 /> },
+    2: { id: 2, component: <Screen2 /> },
+    3: { id: 3, component: <Screen3 /> },
+    4: { id: 4, component: <Screen4 /> },
+    5: { id: 5, component: <Screen5 /> },
   };
 
-  useEffect(() => {
-    if (timer === 0) {
-      setIsPaused(true);
-      // Logique à exécuter lorsque le temps est écoulé
-    }
-  }, [timer]);
-
-  useEffect(() => {
-    if (isPaused) return;
-
-    intervalRef.current = setInterval(() => {
-      setTimer((prev) => prev - 1);
-    }, 1000);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isPaused]);
-
-  const renderScreen = () => {
-    if (showResults) {
-      return (
-        <Card>
-          <CardHeader>
-            <CardTitle>Résultats</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Votre score: {score} / 1</p>
-            <Button onClick={handleRestart}>Recommencer</Button>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{`Écran ${currentScreen + 1}`}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {screens[currentScreen].content}
-          <div className="flex justify-between mt-4">
-            <Button
-              disabled={currentScreen === 0}
-              onClick={handlePrevScreen}
-              variant="outline"
-            >
-              Précédent
-            </Button>
-            <Button
-              onClick={
-                currentScreen === screens.length - 1 ? handleSubmit : handleNextScreen
-              }
-            >
-              {currentScreen === screens.length - 1 ? 'Soumettre' : 'Suivant'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
+  const progressPercentage = (currentScreen / TOTAL_SCREENS) * 100;
 
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-extrabold mb-4">Séance 3: Le Conditionnel</h1>
-      <Progress value={(currentScreen / screens.length) * 100} className="mb-4" />
-      {renderScreen()}
-      <div className="mt-4">
-        <Badge>{`Temps restant: ${timer} secondes`}</Badge>
+    <PageLayout
+      heroTitle="Séance 3 : L'expression du possible et de l'hypothétique"
+      heroDescription="Maîtrisez le mode conditionnel à travers des activités interactives"
+    >
+      <div className="container mx-auto p-6">
+        <div className="mb-6">
+          <Progress value={progressPercentage} className="h-2 mb-2" />
+          <div className="text-sm text-gray-600">
+            Écran {currentScreen} / {TOTAL_SCREENS}
+          </div>
+        </div>
+        
+        {screens.find(screen => screen.id === currentScreen)?.component}
       </div>
-    </div>
+    </PageLayout>
   );
 };
-
-const Seance3 = Seance3Conditionnel;
 
 export default Seance3;

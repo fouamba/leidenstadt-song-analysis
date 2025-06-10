@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
-import { NavigationBar } from "@/components/NavigationBar";
+import { PageLayout } from '@/components/layout/PageLayout';
 import { useVoicePreferences } from '@/contexts/VoicePreferencesContext';
 
 // Importation des écrans de la Séance 1
@@ -162,12 +161,11 @@ const Seance1: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <NavigationBar />
-      
-      <div className="max-w-4xl mx-auto w-full flex-grow p-4">
-        <h1 className="text-2xl font-bold mb-4">Séance 1 : Découverte et compréhension globale de l'œuvre</h1>
-        
+    <PageLayout
+      heroTitle="Séance 1 : Découverte et compréhension globale"
+      heroDescription="Explorez l'œuvre 'Né en 17 à Leidenstadt' de Jean-Jacques Goldman"
+    >
+      <div className="container mx-auto p-4">
         {/* Barre de progression */}
         <div className="mb-6">
           <Progress value={progressPercentage} className="h-2 mb-2" />
@@ -181,13 +179,7 @@ const Seance1: React.FC = () => {
           {renderCurrentScreen()}
         </Card>
       </div>
-
-      <footer className="bg-slate-900 text-white py-4">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm">Application éducative basée sur les compétences - "Né en 17 à Leidenstadt"</p>
-        </div>
-      </footer>
-    </div>
+    </PageLayout>
   );
 };
 
