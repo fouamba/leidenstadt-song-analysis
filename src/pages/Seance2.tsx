@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, SkipForward, SkipBack, CheckCircle, AlertCircle, BookOpen, PenTool, Award, BarChart3, Volume2, Eye, EyeOff } from 'lucide-react';
 import { PageLayout } from '@/components/layout/PageLayout';
@@ -339,37 +340,47 @@ Que ce garçon né dans un lit de satin...`;
   );
 
   // Écrans simplifiés pour compléter la séance
-  const SimpleScreen = ({ screenNum, title, description, icon: React.ElementType, bgColor = "blue" }) => (
-    <div className="container mx-auto p-6">
-      <Card className="max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <icon className={`w-6 h-6 text-${bgColor}-600`} />
-            {title}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6 text-center">
-          <p className="text-gray-600">{description}</p>
-          <Card className="bg-gray-50 p-6">
-            <p className="text-gray-700">Contenu de l'écran {screenNum} à développer...</p>
-            <p className="text-sm text-gray-500 mt-2">
-              Cette interface fournit la structure de base pour implémenter les fonctionnalités complètes.
-            </p>
-          </Card>
-          <Button
-            onClick={() => {
-              markCompleted(screenNum);
-              if (screenNum < 9) navigation.next();
-            }}
-            className={`bg-${bgColor}-600 hover:bg-${bgColor}-700`}
-          >
-            {screenNum < 9 ? 'Continuer' : 'Terminer la séance'}
-            {screenNum < 9 ? <SkipForward className="w-4 h-4 ml-2" /> : <Award className="w-4 h-4 ml-2" />}
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  const SimpleScreen = ({ screenNum, title, description, icon, bgColor = "blue" }: {
+    screenNum: number;
+    title: string;
+    description: string;
+    icon: React.ElementType;
+    bgColor?: string;
+  }) => {
+    const IconComponent = icon;
+    
+    return (
+      <div className="container mx-auto p-6">
+        <Card className="max-w-4xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <IconComponent className={`w-6 h-6 text-${bgColor}-600`} />
+              {title}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-center">
+            <p className="text-gray-600">{description}</p>
+            <Card className="bg-gray-50 p-6">
+              <p className="text-gray-700">Contenu de l'écran {screenNum} à développer...</p>
+              <p className="text-sm text-gray-500 mt-2">
+                Cette interface fournit la structure de base pour implémenter les fonctionnalités complètes.
+              </p>
+            </Card>
+            <Button
+              onClick={() => {
+                markCompleted(screenNum);
+                if (screenNum < 9) navigation.next();
+              }}
+              className={`bg-${bgColor}-600 hover:bg-${bgColor}-700`}
+            >
+              {screenNum < 9 ? 'Continuer' : 'Terminer la séance'}
+              {screenNum < 9 ? <SkipForward className="w-4 h-4 ml-2" /> : <Award className="w-4 h-4 ml-2" />}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   const screens = {
     1: <Screen1 />,
