@@ -28,7 +28,7 @@ import {
 const Seance4 = () => {
   const [currentScreen, setCurrentScreen] = useState(1);
   const [progress, setProgress] = useState(12.5);
-  const [userAnswers, setUserAnswers] = useState({});
+  const [userAnswers, setUserAnswers] = useState<Record<string, any>>({});
   const [selectedSyntaxElement, setSelectedSyntaxElement] = useState('');
   const [forumPosts, setForumPosts] = useState([
     {
@@ -630,7 +630,7 @@ const Seance4 = () => {
 
   // Écran 4.7: Évaluation finale
   const Screen7 = () => {
-    const [selfEvaluation, setSelfEvaluation] = useState({});
+    const [selfEvaluation, setSelfEvaluation] = useState<Record<string, number>>({});
 
     const handleSelfEval = (question, score) => {
       setSelfEvaluation(prev => ({
