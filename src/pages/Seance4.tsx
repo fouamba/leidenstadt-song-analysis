@@ -402,10 +402,10 @@ const Seance4 = () => {
                   <h4 className="font-semibold">Suggestions de structures :</h4>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      'Quand j'étais... ',
+                      'Quand j\'étais... ',
                       'Bien que je sois... ',
-                      'Puisque j'étais... ',
-                      'Même si j'avais été... '
+                      'Puisque j\'étais... ',
+                      'Même si j\'avais été... '
                     ].map((suggestion, index) => (
                       <button
                         key={index}
