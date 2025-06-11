@@ -1,5 +1,3 @@
-import { StaticImageData } from "next/image";
-
 export type Seance = {
     id: number;
     title: string;
@@ -10,7 +8,7 @@ export type Seance = {
     };
     duration: string;
     materials: string[];
-    image?: StaticImageData;
+    image?: string;
     screens: number;
 }
 
