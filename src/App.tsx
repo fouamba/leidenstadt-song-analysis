@@ -20,6 +20,7 @@ import Lyrics from "./pages/Lyrics";
 import ResourceLibraryWrapper from "./pages/dashboard/ResourceLibrary";
 import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
 import StudentDashboard from "./pages/dashboard/StudentDashboard";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
                 <Route path="/dashboard" element={<StudentDashboard />} />
                 <Route path="/resources" element={<ResourceLibraryWrapper />} />
                 <Route path="/teacher" element={<TeacherDashboard />} />
+                <Route path="/login" element={<Login />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
