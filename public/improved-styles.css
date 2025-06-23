@@ -1,121 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Améliorations à ajouter au fichier index.css existant */
 
 @layer base {
+  /* Variables personnalisées pour l'application éducative */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-
-    /* Variables personnalisées pour l'application éducative */
+    /* Couleurs thématiques */
     --education-blue: 219 68% 45%;
     --education-blue-light: 219 68% 85%;
     --education-blue-dark: 219 68% 25%;
-
+    
     --success-green: 142 76% 36%;
     --success-green-light: 142 76% 85%;
-
+    
     --warning-orange: 25 95% 53%;
     --warning-orange-light: 25 95% 85%;
-
+    
     --accent-purple: 262 52% 47%;
     --accent-purple-light: 262 52% 85%;
-
+    
     /* Espacement et dimensions pour l'interface pédagogique */
     --content-max-width: 1200px;
     --sidebar-width: 320px;
     --header-height: 64px;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
   }
 }
 
@@ -124,15 +29,15 @@
   .session-card {
     @apply relative overflow-hidden rounded-lg border-2 border-gray-200 bg-white transition-all duration-300 hover:border-blue-300 hover:shadow-lg;
   }
-
+  
   .session-card.completed {
     @apply border-green-300 bg-green-50;
   }
-
+  
   .session-card.in-progress {
     @apply border-blue-300 bg-blue-50;
   }
-
+  
   .session-card.locked {
     @apply border-gray-100 bg-gray-50 opacity-75;
   }
@@ -141,13 +46,34 @@
   .progress-indicator {
     @apply relative overflow-hidden rounded-full bg-gray-200;
   }
-
+  
   .progress-bar {
     @apply h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500 ease-out;
   }
-
+  
   .progress-bar.completed {
     @apply from-green-500 to-green-600;
+  }
+
+  /* Badges de statut */
+  .status-badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+  
+  .status-badge.completed {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .status-badge.in-progress {
+    @apply bg-blue-100 text-blue-800;
+  }
+  
+  .status-badge.available {
+    @apply bg-gray-100 text-gray-800;
+  }
+  
+  .status-badge.locked {
+    @apply bg-gray-50 text-gray-500;
   }
 
   /* Hero section avec overlay dégradé */
@@ -169,11 +95,11 @@
   .content-grid {
     @apply grid grid-cols-1 gap-8 lg:grid-cols-12;
   }
-
+  
   .content-main {
     @apply lg:col-span-8;
   }
-
+  
   .content-sidebar {
     @apply lg:col-span-4;
   }
@@ -182,18 +108,59 @@
   .fade-in {
     animation: fadeIn 0.5s ease-in-out;
   }
-
+  
   .slide-up {
     animation: slideUp 0.6s ease-out;
   }
-
+  
   .scale-in {
     animation: scaleIn 0.3s ease-out;
+  }
+
+  /* Styles pour la navigation */
+  .nav-link {
+    @apply relative px-3 py-2 text-sm font-medium transition-colors duration-200;
+  }
+  
+  .nav-link:hover {
+    @apply text-blue-600;
+  }
+  
+  .nav-link.active::after {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600;
+  }
+
+  /* Styles pour les boutons d'action */
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 focus:ring-blue-500;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 focus:ring-gray-500;
+  }
+  
+  .btn-success {
+    @apply bg-green-600 hover:bg-green-700 focus:ring-green-500;
+  }
+
+  /* Styles pour les formulaires et inputs */
+  .form-input {
+    @apply rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500;
   }
 
   /* Styles pour la sidebar */
   .sidebar-sticky {
     @apply sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto;
+  }
+
+  /* Styles pour les tooltips */
+  .tooltip {
+    @apply invisible absolute z-10 rounded-lg bg-gray-900 px-3 py-2 text-sm text-white opacity-0 transition-opacity duration-300;
+  }
+  
+  .tooltip.show {
+    @apply visible opacity-100;
   }
 }
 
@@ -203,15 +170,37 @@
     @apply absolute h-px w-px overflow-hidden whitespace-nowrap border-0 p-0;
     clip: rect(0, 0, 0, 0);
   }
-
+  
   /* Utilitaires pour les états de focus */
   .focus-visible {
     @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
   }
-
+  
   /* Utilitaires pour les transitions douces */
   .transition-smooth {
     @apply transition-all duration-300 ease-in-out;
+  }
+  
+  /* Utilitaires pour le texte */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Utilitaires pour les scrollbars personnalisées */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
   }
 }
 
@@ -256,16 +245,30 @@
       rgba(37, 99, 235, 0.85) 100%
     );
   }
-
+  
   .content-grid {
     @apply grid-cols-1 gap-6;
   }
-
+  
   .session-card {
     @apply p-4;
   }
-
+  
   .sidebar-sticky {
     @apply static max-h-none;
+  }
+}
+
+@media (max-width: 640px) {
+  .main-container {
+    @apply px-3;
+  }
+  
+  .hero-section {
+    @apply py-12;
+  }
+  
+  .hero-title {
+    @apply text-3xl;
   }
 }

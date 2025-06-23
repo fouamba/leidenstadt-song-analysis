@@ -1,0 +1,242 @@
+// SessionNavigation.tsx
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { 
+  CheckCircle2, 
+  Circle, 
+  Play, 
+  Lock, 
+  Clock,
+  ChevronRight 
+} from "lucide-react";
+
+interface Session {
+  id: number;
+  title: string;
+  description: string;
+  duration: string;
+  status: "completed" | "in-progress" | "available" | "locked";
+  progress: number;
+  totalScreens: number;
+  completedScreens: number;
+}
+
+interface SessionNavigationProps {
+  sessions: Session[];
+  currentSessionId?: number;
+}
+
+export const SessionNavigation: React.FC<SessionNavigationProps> = ({ 
+  sessions, 
+  currentSessionId 
+}) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const getStatusIcon = (status: Session["status"]) => {
+    switch (status) {
+      case "completed":
+        return <CheckCircle2 size={20} className="text-green-600" />;
+      case "in-progress":
+        return <Play size={20} className="text-blue-600" />;
+      case "available":
+        return <Circle size={20} className="text-gray-400" />;
+      case "locked":
+        return <Lock size={20} className="text-gray-300" />;
+    }
+  };
+
+  const getStatusColor = (status: Session["status"]) => {
+    switch (status) {
+      case "completed":
+        return "border-green-200 bg-green-50";
+      case "in-progress":
+        return "border-blue-200 bg-blue-50";
+      case "available":
+        return "border-gray-200 bg-white hover:bg-gray-50";
+      case "locked":
+        return "border-gray-100 bg-gray-50";
+    }
+  };
+
+  const getButtonText = (status: Session["status"]) => {
+    switch (status) {
+      case "completed":
+        return "Revoir";
+      case "in-progress":
+        return "Continuer";
+      case "available":
+        return "Commencer";
+      case "locked":
+        return "Verrouillé";
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* En-tête de navigation */}
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Programme des séances
+        </h2>
+        <p className="text-gray-600">
+          Progression séquentielle avec déblocage automatique
+        </p>
+      </div>
+
+      {/* Indicateur de progression global */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-gray-900">Progression globale</h3>
+          <span className="text-2xl font-bold text-blue-600">
+            {Math.round(sessions.reduce((acc, s) => acc + s.progress, 0) / sessions.length)}%
+          </span>
+        </div>
+        <Progress 
+          value={sessions.reduce((acc, s) => acc + s.progress, 0) / sessions.length} 
+          className="h-3 mb-3" 
+        />
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>
+            {sessions.filter(s => s.status === "completed").length} séance(s) terminée(s)
+          </span>
+          <span>
+            {sessions.reduce((acc, s) => acc + s.completedScreens, 0)} / {sessions.reduce((acc, s) => acc + s.totalScreens, 0)} écrans
+          </span>
+        </div>
+      </div>
+
+      {/* Liste des séances */}
+      <div className="grid gap-4">
+        {sessions.map((session, index) => (
+          <div
+            key={session.id}
+            className={`relative p-6 rounded-lg border-2 transition-all duration-200 ${getStatusColor(session.status)} ${
+              currentSessionId === session.id ? "ring-2 ring-blue-300" : ""
+            }`}
+          >
+            {/* Ligne de connexion entre les séances */}
+            {index < sessions.length - 1 && (
+              <div className="absolute left-8 top-full w-0.5 h-4 bg-gray-200"></div>
+            )}
+
+            <div className="flex items-start gap-4">
+              {/* Icône de statut */}
+              <div className="flex-shrink-0 mt-1">
+                {getStatusIcon(session.status)}
+              </div>
+
+              {/* Contenu de la séance */}
+              <div className="flex-grow min-w-0">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold text-lg text-gray-900">
+                        Séance {session.id}
+                      </h3>
+                      <Badge 
+                        variant={session.status === "completed" ? "default" : 
+                                session.status === "in-progress" ? "secondary" : "outline"}
+                      >
+                        {session.status === "completed" ? "Terminé" : 
+                         session.status === "in-progress" ? "En cours" : 
+                         session.status === "available" ? "Disponible" : "Verrouillé"}
+                      </Badge>
+                    </div>
+                    <h4 className="font-medium text-gray-800 mb-2">
+                      {session.title}
+                    </h4>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {session.description}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-sm text-gray-500 ml-4">
+                    <Clock size={16} />
+                    <span className="whitespace-nowrap">{session.duration}</span>
+                  </div>
+                </div>
+
+                {/* Barre de progression de la séance */}
+                {session.progress > 0 && (
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-xs text-gray-500">
+                        Progression: {session.completedScreens}/{session.totalScreens} écrans
+                      </span>
+                      <span className="text-xs font-medium text-gray-700">
+                        {session.progress}%
+                      </span>
+                    </div>
+                    <Progress value={session.progress} className="h-2" />
+                  </div>
+                )}
+
+                {/* Action */}
+                <div className="flex justify-end">
+                  <Button
+                    variant={session.status === "locked" ? "outline" : "default"}
+                    size="sm"
+                    disabled={session.status === "locked"}
+                    onClick={() => navigate(`/seance/${session.id}`)}
+                    className="gap-2"
+                  >
+                    {getButtonText(session.status)}
+                    {session.status !== "locked" && <ChevronRight size={16} />}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Données d'exemple pour les séances
+export const sessionData: Session[] = [
+  {
+    id: 1,
+    title: "Découverte et compréhension globale de l'œuvre",
+    description: "Introduction à la chanson, premières impressions, compréhension globale et exploration des contextes historiques.",
+    duration: "45 minutes",
+    status: "completed",
+    progress: 100,
+    totalScreens: 9,
+    completedScreens: 9
+  },
+  {
+    id: 2,
+    title: "L'expression du passé par les temps de l'indicatif",
+    description: "Analyse des temps du passé, exercices d'application et exploration stylistique des effets temporels.",
+    duration: "50 minutes",
+    status: "in-progress",
+    progress: 30,
+    totalScreens: 9,
+    completedScreens: 3
+  },
+  {
+    id: 3,
+    title: "L'expression du possible et de l'hypothétique avec le mode conditionnel",
+    description: "Approfondissement du mode conditionnel à travers des activités interactives et un laboratoire de style.",
+    duration: "55 minutes",
+    status: "available",
+    progress: 0,
+    totalScreens: 9,
+    completedScreens: 0
+  },
+  {
+    id: 4,
+    title: "La phrase complexe et la communication artistique",
+    description: "Analyse structurelle avancée, dimension philosophique et préparation du commentaire composé final.",
+    duration: "60 minutes",
+    status: "locked",
+    progress: 0,
+    totalScreens: 9,
+    completedScreens: 0
+  }
+];

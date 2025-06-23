@@ -1,3 +1,4 @@
+// RefactoredHomePage.tsx - Version optimisée conforme au cahier des charges
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { 
   BookOpen, 
   BarChart2, 
@@ -18,16 +19,17 @@ import {
   Users,
   Target,
   CheckCircle2,
+  Circle,
+  Lock,
   Volume2
 } from "lucide-react";
 
-// Importation des composants créés
-import { ImprovedHeader } from "@/components/ImprovedHeader";
-import { EnhancedHeroSection } from "@/components/EnhancedHeroSection";
-import { SessionNavigation, sessionData } from "@/components/SessionNavigation";
-import VoiceInstruction from "@/components/audio/VoiceInstruction";
+// Importation des composants créés précédemment
+import { ImprovedHeader } from "./components/ImprovedHeader";
+import { EnhancedHeroSection } from "./components/EnhancedHeroSection";
+import { SessionNavigation, sessionData } from "./components/SessionNavigation";
 
-const HomePage: React.FC = () => {
+const RefactoredHomePage: React.FC = () => {
   const navigate = useNavigate();
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [mode, setMode] = useState<"autonome" | "accompagne">("autonome");
@@ -38,9 +40,9 @@ const HomePage: React.FC = () => {
   
   const handleStartSequence = () => {
     if (globalProgress > 0) {
-      navigate(`/seance${currentSession}`);
+      navigate(`/seance/${currentSession}`);
     } else {
-      navigate("/seance1");
+      navigate("/seance/1");
     }
   };
 
@@ -94,8 +96,29 @@ const HomePage: React.FC = () => {
                         Cette séquence pédagogique structurée en 4 sessions explore l'œuvre "Né en 17 à Leidenstadt" de Jean-Jacques Goldman, une chanson qui aborde des thématiques universelles et permet d'approfondir vos connaissances linguistiques et historiques.
                       </p>
                     </div>
-                    <VoiceInstruction text="Cette séquence pédagogique structurée en 4 sessions explore l'œuvre Né en 17 à Leidenstadt de Jean-Jacques Goldman, une chanson qui aborde des thématiques universelles et permet d'approfondir vos connaissances linguistiques et historiques." />
+                    <Button variant="outline" size="icon" className="flex-shrink-0">
+                      <Volume2 size={16} />
+                    </Button>
                   </div>
+                </div>
+
+                {/* Vidéo de présentation */}
+                <div className="relative">
+                  <div className="aspect-video rounded-lg overflow-hidden bg-gray-900 group cursor-pointer" onClick={handlePlayVideo}>
+                    <img
+                      src="/leidenstadt_accueil.jpg"
+                      alt="Aperçu vidéo"
+                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-colors">
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-4 group-hover:bg-white/30 transition-colors">
+                        <Play size={32} className="text-white ml-1" />
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-center text-sm text-gray-600 mt-2">
+                    Cliquez pour regarder la vidéo de présentation (3 min)
+                  </p>
                 </div>
 
                 {/* Statistiques rapides */}
@@ -136,7 +159,9 @@ const HomePage: React.FC = () => {
                         Analyser un extrait d'œuvre poétique/littéraire à l'aide d'outils linguistiques et développer les procédés linguistiques qui accompagnent la notion d'engagement, pour en percevoir les composantes principales.
                       </p>
                     </div>
-                    <VoiceInstruction text="Analyser un extrait d'œuvre poétique ou littéraire à l'aide d'outils linguistiques et développer les procédés linguistiques qui accompagnent la notion d'engagement, pour en percevoir les composantes principales." />
+                    <Button variant="outline" size="icon" className="flex-shrink-0">
+                      <Volume2 size={16} />
+                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -373,4 +398,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default RefactoredHomePage;
