@@ -37,7 +37,10 @@ const Screen1_3: React.FC<Screen1_3Props> = ({ onComplete, onNext, onPrevious })
       options: [
         'Le destin et les circonstances de la vie',
         'La guerre et ses conséquences',
+		'un plaidoyer poignant pour un monde où les conditions extrêmes qui forcent des dilemmes moraux n\'existent plus',
         'L\'amour et les relations humaines',
+		'appel à l\'humilité, à la tolérance et à l\'empathie',
+		'un plaidoyer pour la paix et une expression d\'espoir',
         'La jeunesse et l\'adolescence'
       ]
     },
@@ -50,6 +53,7 @@ const Screen1_3: React.FC<Screen1_3Props> = ({ onComplete, onNext, onPrevious })
         'La mélancolie et la nostalgie',
         'La colère et la révolte',
         'L\'espoir et l\'optimisme',
+		'Humilité, tolérance et empathie',
         'La peur et l\'angoisse'
       ]
     },
@@ -62,6 +66,7 @@ const Screen1_3: React.FC<Screen1_3Props> = ({ onComplete, onNext, onPrevious })
         'L\'importance de la solidarité humaine',
         'La critique des conflits armés',
         'La réflexion sur les hasards de l\'existence',
+		'Message d\'Espoir et un pacifisme actif',
         'L\'appel à la paix mondiale'
       ]
     }

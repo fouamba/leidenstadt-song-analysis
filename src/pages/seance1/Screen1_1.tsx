@@ -103,7 +103,7 @@ const Screen1_1: React.FC<Screen1_1Props> = ({ onComplete, onNext }) => {
               className="min-h-20"
             />
             <div className="text-sm text-muted-foreground">
-              {impressions.length} caractères (minimum 20 requis)
+              {impressions.length} caractères (minimum 100 requis)
             </div>
           </div>
         </CardContent>

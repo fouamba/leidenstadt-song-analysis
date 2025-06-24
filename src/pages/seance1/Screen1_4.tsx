@@ -38,17 +38,18 @@ export default function Screen1_4({ onComplete, onNext, onPrevious }: Screen1_4P
     {
       question: "Combien de couplets comporte la chanson ?",
       options: ["2 couplets", "3 couplets", "4 couplets", "5 couplets"],
-      correctAnswer: "3 couplets"
+      correctAnswer: "5 couplets"
     },
     {
       question: "Quelle est la structure principale de la chanson ?",
       options: [
         "Couplet - Refrain - Couplet - Refrain - Couplet - Refrain", 
-        "Introduction - Couplet - Refrain - Couplet - Pont - Refrain", 
+        "Introduction - Couplet - Refrain - Couplet - Pont - Refrain",
+        "Introduction - Couplet - Couplet - Couplet - couplet - Refrain - Pont - Couplet - Final",		
         "Couplet - Pont - Couplet - Pont - Couplet - Conclusion",
         "Introduction - Couplet - Pont - Couplet - Pont - Couplet - Conclusion"
       ],
-      correctAnswer: "Couplet - Pont - Couplet - Pont - Couplet - Conclusion"
+      correctAnswer: "Introduction - Couplet - Couplet - Couplet - couplet - Refrain - Pont - Couplet - Final"
     },
     {
       question: "Quel instrument est prédominant dans l'introduction ?",
@@ -60,10 +61,10 @@ export default function Screen1_4({ onComplete, onNext, onPrevious }: Screen1_4P
       options: [
         "Elle reste constante du début à la fin", 
         "Elle diminue progressivement", 
-        "Elle augmente progressivement avec un pic à la fin",
+        "Elle augmente progressivement avec un pic à la fin du refrain suivi par une tonalité apaisée",
         "Elle alterne entre forte et douce"
       ],
-      correctAnswer: "Elle augmente progressivement avec un pic à la fin"
+      correctAnswer: "Elle augmente progressivement avec un pic à la fin du refrain suivi par une tonalité apaisée"
     },
     {
       question: "Comment se termine musicalement la chanson ?",
@@ -79,9 +80,9 @@ export default function Screen1_4({ onComplete, onNext, onPrevious }: Screen1_4P
     {
       question: "Quel est le schéma de rimes dominant dans les couplets ?",
       options: [
-        "AABB", "ABAB", "ABBA", "AABBAA"
+        "AABB", "ABAB", "ABBA", "AABB"
       ],
-      correctAnswer: "ABAB"
+      correctAnswer: "AABB"
     },
     {
       question: "Quel élément rythmique marque le refrain ?",

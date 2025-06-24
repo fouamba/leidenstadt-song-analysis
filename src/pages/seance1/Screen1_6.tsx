@@ -64,7 +64,7 @@ export default function Screen1_6({ onComplete, onNext, onPrevious }: Screen1_6P
     allemagne: {
       title: "L'Allemagne après 1917",
       description: "L'Allemagne suite à la Première Guerre mondiale et la montée du nazisme",
-      videoUrl: "https://example.com/allemagne-apres-1917.mp4",
+      videoUrl: "https://youtu.be/xBU8UNbZQyY?si=dnLjFJRUdsLkzbxc",
       mapPosition: { top: "30%", left: "50%" },
       quiz: [
         {
@@ -105,7 +105,7 @@ export default function Screen1_6({ onComplete, onNext, onPrevious }: Screen1_6P
     belfast: {
       title: "Les docklands de Belfast",
       description: "Le conflit nord-irlandais et les tensions entre catholiques et protestants",
-      videoUrl: "https://example.com/belfast-docklands.mp4",
+      videoUrl: "https://youtu.be/vpIPmNrVoak?si=DBbIcPXrQ4RVUmYT",
       mapPosition: { top: "20%", left: "35%" },
       quiz: [
         {
@@ -146,7 +146,7 @@ export default function Screen1_6({ onComplete, onNext, onPrevious }: Screen1_6P
     johannesburg: {
       title: "Johannesburg sous l'apartheid",
       description: "Le système de ségrégation raciale en Afrique du Sud",
-      videoUrl: "https://example.com/johannesburg-apartheid.mp4",
+      videoUrl: "https://youtu.be/r7x0qRzCcog?si=dsoCka9Vb2EGNlpO",
       mapPosition: { top: "70%", left: "55%" },
       quiz: [
         {
